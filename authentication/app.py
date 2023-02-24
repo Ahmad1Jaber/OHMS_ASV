@@ -33,11 +33,19 @@ def register():
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     # Insert the user into the database
-    cursor = cnx.cursor()
-    insert_query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
-    insert_data = (username, email, hashed_password.decode('utf-8'))
-    cursor.execute(insert_query, insert_data)
-    cnx.commit()
+    try:
+        cursor = cnx.cursor()
+        insert_query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
+        insert_data = (username, email, hashed_password.decode('utf-8'))
+        cursor.execute(insert_query, insert_data)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        # Handle database errors
+        response = {
+            'status': 'fail',
+            'message': f"Database error: {err}"
+        }
+        return jsonify(response), 500
 
     # Return a success response
     response = {
