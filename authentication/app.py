@@ -3,28 +3,32 @@ from flask import Flask, request, jsonify
 import configparser
 import mysql.connector
 import bcrypt
-
+global cnx
 app = Flask(__name__)
+from configparser import ConfigParser
 
-# Get Cloud SQL credentials
-config = configparser.ConfigParser()
+# Read the credentials from the config file
+config = ConfigParser()
 config.read('config.ini')
 
-cnx = mysql.connector.connect(
-    user=config['mysql']['user'],
-    password=config['mysql']['password'],
-    host=config['mysql']['host'],
-    database=config['mysql']['database']
-)
+username = config.get('mysql', 'user')
+password = config.get('mysql', 'password')
+hostname = config.get('mysql', 'host')
+database = config.get('mysql', 'database')
 
+# Connect to the database
+cnx = mysql.connector.connect(user=username,
+                              password=password,
+                              host=hostname,
+                              database=database)
 
-@app.route('/register', methods=['POST'])
+@app.route('/register',methods=['POST'])
 def register():
     # Get the request data
     data = request.json
 
     # Extract the user details from the request data
-    username = data.get('username')
+    hotel_name = data.get('hotel_name')
     email = data.get('email')
     password = data.get('password')
 
@@ -35,8 +39,8 @@ def register():
     # Insert the user into the database
     try:
         cursor = cnx.cursor()
-        insert_query = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
-        insert_data = (username, email, hashed_password.decode('utf-8'))
+        insert_query = "INSERT INTO  hotel_managers (hotel_name, email, password) VALUES (%s, %s, %s)"
+        insert_data = (hotel_name, email, hashed_password.decode('utf-8'))
         cursor.execute(insert_query, insert_data)
         cnx.commit()
     except mysql.connector.Error as err:
@@ -54,6 +58,9 @@ def register():
     }
     return jsonify(response), 200
 
+
+
+
 @app.route('/login', methods=['POST'])
 def login():
     # Get the request data
@@ -65,7 +72,7 @@ def login():
 
     # Retrieve the user from the database
     cursor = cnx.cursor()
-    select_query = "SELECT id, password FROM users WHERE email = %s"
+    select_query = "SELECT manager_id, password FROM hotel_managers WHERE email = %s"
     select_data = (email,)
     cursor.execute(select_query, select_data)
     result = cursor.fetchone()
@@ -94,3 +101,7 @@ def login():
             'message': 'Invalid email or password.'
         }
         return jsonify(response), 401
+    
+    
+if __name__ == "__main__":
+    app.run()
