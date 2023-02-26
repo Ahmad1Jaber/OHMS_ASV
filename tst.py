@@ -1,8 +1,7 @@
 import requests
 
-url = "http://localhost:5000/register"
+url = "http://localhost:5000/login"
 data = {
-    "hotel_name": "Marriot",
     "email": "manager@marriot.com",
     "password": "ahmadjaber"
 }
