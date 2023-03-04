@@ -17,7 +17,7 @@ jobs:
 
     - name: Authenticate with gcloud
       run: |
-        gcloud auth activate-service-account --key-file=${{ secrets.GCLOUD_AUTH }}
+        gcloud auth activate-service-account --key-file ${{ secrets.GCLOUD_AUTH }}
         gcloud auth configure-docker
 
     - name: Build and push Docker image
