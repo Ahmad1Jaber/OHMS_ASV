@@ -5,7 +5,7 @@ on:
     branches: [main]
 
 env:
-  PROJECT_ID: your-project-id
+  PROJECT_ID: 	carbon-zone-377308
 
 jobs:
   build:
