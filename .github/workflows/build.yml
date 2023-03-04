@@ -17,7 +17,7 @@ jobs:
 
     - name: Authenticate with gcloud
       run: |
-        gcloud auth activate-service-account --key-file=carbon-zone-377308-11e3fe73075a.json
+        gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
         gcloud auth configure-docker
 
     - name: Build and push Docker image
