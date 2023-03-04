@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  PROJECT_ID: my-project-id # replace with your GCP project ID
+  PROJECT_ID: carbon-zone-377308 # replace with your GCP project ID
   IMAGE_NAME_1: gcr.io/$PROJECT_ID/hotel_authenticate # replace with your app1 image name
   IMAGE_NAME_2: gcr.io/$PROJECT_ID/hotel_manage # replace with your app2 image name
 
