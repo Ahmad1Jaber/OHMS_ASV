@@ -22,7 +22,7 @@ jobs:
       uses: docker/setup-buildx-action@v1
       
     - name: Configure gcloud CLI
-      uses: google-github-actions/setup-gcloud@master
+      uses: google-github-actions/setup-gcloud@main
       with:
         project_id: ${{ env.PROJECT_ID }}
         service_account_key: ${{ secrets.GCLOUD_AUTH }}
