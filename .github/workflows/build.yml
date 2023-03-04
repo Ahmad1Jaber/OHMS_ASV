@@ -1,52 +1,29 @@
-name: Build and Push Docker Images to GCR
+name: Build and push Docker image
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 env:
-  PROJECT_ID: carbon-zone-377308 # replace with your GCP project ID
-  IMAGE_NAME_1: gcr.io/$PROJECT_ID/hotel_authenticate # replace with your app1 image name
-  IMAGE_NAME_2: gcr.io/$PROJECT_ID/hotel_manage # replace with your app2 image name
+  PROJECT_ID: your-project-id
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-      
-    - name: Configure gcloud CLI
-      uses: google-github-actions/setup-gcloud@main
-      with:
-        project_id: ${{ env.PROJECT_ID }}
-        service_account_key: ${{ secrets.GCLOUD_AUTH }}
-        export_default_credentials: true
-        
-    - name: Authenticate Docker to GCR
-      uses: docker/login-action@v1
-      with:
-        registry: gcr.io
-        username: _json_key
-        password: ${{ secrets.GCR_AUTH }}
-        
-    - name: Build and push Docker image for app1
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: authentication/Dockerfile
-        push: true
-        tags: ${{ env.IMAGE_NAME_1 }}:${{ github.sha }}
-        
-    - name: Build and push Docker image for app2
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        file: manage/Dockerfile
-        push: true
-        tags: ${{ env.IMAGE_NAME_2 }}:${{ github.sha }}
+
+    - name: Authenticate with gcloud
+      run: |
+        gcloud auth activate-service-account --key-file=${{ secrets.GCLOUD_AUTH }}
+        gcloud auth configure-docker
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest ./authenticate
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest
+
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest ./manage
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest
