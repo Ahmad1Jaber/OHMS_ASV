@@ -1,17 +1,26 @@
+import os
 from flask import Flask, request, jsonify
-from flask_mysqldb import MySQL
-from datetime import datetime, timedelta
+import configparser
+import mysql.connector
+import bcrypt
 
 app = Flask(__name__)
+from configparser import ConfigParser
 
-# MySQL configurations
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'hotels'
-app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+# Read the credentials from the config file
+config = ConfigParser()
+config.read('config.ini')
 
-mysql = MySQL(app)
+username = config.get('mysql', 'user')
+password = config.get('mysql', 'password')
+hostname = config.get('mysql', 'host')
+database = config.get('mysql', 'database')
 
+# Connect to the database
+cnx = mysql.connector.connect(user=username,
+                              password=password,
+                              host=hostname,
+                              database=database)
 
 @app.route('/managers', methods=['POST'])
 def create_manager():
@@ -23,15 +32,29 @@ def create_manager():
     email = manager['email']
     password = manager['password']
 
-    cur = mysql.connection.cursor()
-    cur.execute(
-        "INSERT INTO hotel_managers (hotel_name, email, password) VALUES (%s, %s, %s)",
-        (name, email, password)
-    )
-    mysql.connection.commit()
-    cur.close()
+    # Hash and salt the password
+    salt = bcrypt.gensalt()
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
-    return jsonify({'message': 'Hotel manager created successfully'})
+    # Insert the manager into the database
+    try:
+        cursor = cnx.cursor()
+        insert_query = "INSERT INTO hotel_managers (hotel_name, email, password) VALUES (%s, %s, %s)"
+        insert_data = (name, email, hashed_password.decode('utf-8'))
+        cursor.execute(insert_query, insert_data)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        # Handle database errors
+        response = {
+            'message': f"Database error: {err}"
+        }
+        return jsonify(response), 500
+
+    # Return a success response
+    response = {
+        'message': 'Hotel manager created successfully'
+    }
+    return jsonify(response)
 
 
 @app.route('/managers/<int:manager_id>/rooms', methods=['POST'])
@@ -44,15 +67,25 @@ def create_room(manager_id):
     price = room['price']
     capacity = room['capacity']
 
-    cur = mysql.connection.cursor()
-    cur.execute(
-        "INSERT INTO rooms (manager_id, room_type, price, capacity) VALUES (%s, %s, %s, %s)",
-        (manager_id, room_type, price, capacity)
-    )
-    mysql.connection.commit()
-    cur.close()
+    # Insert the room into the database
+    try:
+        cursor = cnx.cursor()
+        insert_query = "INSERT INTO rooms (manager_id, room_type, price, capacity) VALUES (%s, %s, %s, %s)"
+        insert_data = (manager_id, room_type, price, capacity)
+        cursor.execute(insert_query, insert_data)
+        cnx.commit()
+    except mysql.connector.Error as err:
+        # Handle database errors
+        response = {
+            'message': f"Database error: {err}"
+        }
+        return jsonify(response), 500
 
-    return jsonify({'message': 'Room created successfully'})
+    # Return a success response
+    response = {
+        'message': 'Room created successfully'
+    }
+    return jsonify(response)
 
 
 @app.route('/managers/<int:manager_id>/rooms', methods=['GET'])
@@ -60,13 +93,22 @@ def get_rooms(manager_id):
     """
     Endpoint to get all rooms for a given hotel manager
     """
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM rooms WHERE manager_id = %s", (manager_id,))
-    rooms = cur.fetchall()
-    cur.close()
+    try:
+        cursor = cnx.cursor(dictionary=True)
+        select_query = "SELECT * FROM rooms WHERE manager_id = %s"
+        select_data = (manager_id,)
+        cursor.execute(select_query, select_data)
+        rooms = cursor.fetchall()
+    except mysql.connector.Error as err:
+        # Handle database errors
+        response = {
+            'message': f"Database error: {err}"
+        }
+        return jsonify(response), 500
+    finally:
+        cursor.close()
 
     return jsonify({'rooms': rooms})
-
 
 
 if __name__ == '__main__':
