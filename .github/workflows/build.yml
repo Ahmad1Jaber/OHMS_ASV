@@ -42,3 +42,7 @@ jobs:
         docker build -t gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest ./Uauthentication
         docker push gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest
 
+    - name: Build and push Docker users_auth image
+      run: |
+         helm upgrade authentication-chart ./authentication/authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+
