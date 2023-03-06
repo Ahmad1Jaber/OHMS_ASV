@@ -21,8 +21,12 @@ jobs:
         gcloud auth configure-docker
   
     - name: Configure kubectl
-      run: gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
-  
+      run: |
+        gcloud components install gke-gcloud-auth-plugin
+        gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+        
+
+
 
 
     - name: Build and push Docker authentication image
