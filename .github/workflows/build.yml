@@ -22,7 +22,7 @@ jobs:
   
     - name: Configure kubectl
       run: |
-        gcloud components install gke-gcloud-auth-plugin
+        sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
         gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
         
 
