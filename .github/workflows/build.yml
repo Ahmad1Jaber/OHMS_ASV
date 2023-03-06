@@ -19,17 +19,26 @@ jobs:
       run: |
         gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
         gcloud auth configure-docker
+  
+    - name: Configure kubectl
+      run: gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  
 
-    - name: Build and push Docker image
+
+    - name: Build and push Docker authentication image
       run: |
         docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest ./authentication
         docker push gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest
-
+    - name: Build and push Docker managers image
+      run: |
         docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest ./manage
         docker push gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest
-        
+    - name: Build and push Docker occupancy image
+      run: |        
         docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest ./occupancy
         docker push gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest
-
+    - name: Build and push Docker users_auth image
+      run: |
         docker build -t gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest ./Uauthentication
         docker push gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest
+
