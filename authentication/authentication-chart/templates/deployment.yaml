@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-authentication
+  labels:
+    app: hotel-authentication
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hotel-authentication
+  template:
+    metadata:
+      labels:
+        app: hotel-authentication
+    spec:
+      containers:
+      - name: hotel-authentication
+        image: gcr.io/carbon-zone-377308/hotel_authenticate
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: gcr-secret
