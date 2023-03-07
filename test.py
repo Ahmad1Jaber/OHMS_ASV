@@ -1,7 +1,10 @@
 import requests
 
+
+
+"""""
 # Define the API URL
-url = 'http://api.birdbook.live/register'
+url = 'http://127.0.0.1:5000/register'
 
 # Define the request data
 data = {
@@ -17,8 +20,21 @@ response = requests.post(url, json=data)
 print(response.json())
 
 
-
 url = 'http://api.birdbook.live/login'
+
+# Define the request data
+data = {
+    'email': 'managerAhmad@example.com',
+    'password': 'mypassword'
+}
+
+# Make the HTTP request
+response = requests.post(url, json=data)
+
+# Print the response
+print(response.json())
+
+url = 'http://127.0.0.1:5000/login'
 
 # Define the request data
 data = {
@@ -33,21 +49,6 @@ response = requests.post(url, json=data)
 print(response.json())
 
 """""
-url = 'http://api.birdbook.live/login'
-
-# Define the request data
-data = {
-    'email': 'managerAhmad@example.com',
-    'password': 'mypassword'
-}
-
-# Make the HTTP request
-response = requests.post(url, json=data)
-
-# Print the response
-print(response.json())
-
-
 url = 'http://api.birdbook.live/managers/3/rooms'
 response = requests.get(url)
 
@@ -58,4 +59,3 @@ if response.status_code == 200:
 else:
     print(f'Request failed with status code {response.status_code}')
 
-"""
