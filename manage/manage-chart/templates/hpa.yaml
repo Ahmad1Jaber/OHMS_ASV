@@ -4,17 +4,17 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: hotel-management
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    app: hotel-management
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "<chart-name>.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+    name: hotel-management
+  minReplicas: 3
+  maxReplicas: 10
   metrics:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+        targetAverageUtilization: 90
 {{- end }}
