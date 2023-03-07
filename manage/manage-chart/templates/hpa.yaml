@@ -2,7 +2,7 @@
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "<chart-name>.fullname" . }}
+  name: hotel-management
   labels:
     {{- include "chart.labels" . | nindent 4 }}
 spec:
