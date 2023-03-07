@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-authentication
+  labels:
+    app: user-authentication
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-authentication
+  template:
+    metadata:
+      labels:
+        app: user-authentication
+    spec:
+      containers:
+      - name: user-authentication
+        image: gcr.io/carbon-zone-377308/users_authentication
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: gcr-secret

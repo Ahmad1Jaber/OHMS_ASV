@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-occupancy
+  labels:
+    app: hotel-occupancy
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hotel-occupancy
+  template:
+    metadata:
+      labels:
+        app: hotel-occupancy
+    spec:
+      containers:
+      - name: hotel-occupancy
+        image: gcr.io/carbon-zone-377308/hotel_occupancy
+        ports:
+        - containerPort: 5000
+      imagePullSecrets:
+      - name: gcr-secret
