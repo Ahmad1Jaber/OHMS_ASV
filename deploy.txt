@@ -72,6 +72,6 @@ kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv
 
          helm install occupancy-chart ./occupancy/occupancy-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
          helm install uauth-chart ./Uauthentication/uauth-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-
+helm.exe package manage-chart manage-chart/
 
 helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
