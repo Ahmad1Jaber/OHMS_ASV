@@ -5,3 +5,8 @@ service:
   name: hotel-authentication
   port: 5000
   type: ClusterIP
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 90
