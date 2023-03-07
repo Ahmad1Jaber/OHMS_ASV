@@ -22,7 +22,12 @@ jobs:
   
     - name: Configure kubectl
       run: |
-        sudo apt-get update && sudo apt-get --only-upgrade install google-cloud-sdk-package-go-module google-cloud-sdk-config-connector google-cloud-sdk-terraform-tools google-cloud-sdk-minikube google-cloud-sdk-app-engine-python-extras google-cloud-sdk-log-streaming google-cloud-sdk-local-extract google-cloud-sdk-kubectl-oidc google-cloud-sdk-datastore-emulator google-cloud-sdk-gke-gcloud-auth-plugin google-cloud-sdk-app-engine-go google-cloud-sdk-harbourbridge google-cloud-sdk-cbt google-cloud-sdk-pubsub-emulator google-cloud-sdk-app-engine-grpc google-cloud-sdk-kpt google-cloud-sdk-cloud-build-local kubectl google-cloud-sdk-anthos-auth google-cloud-sdk google-cloud-sdk-spanner-emulator google-cloud-sdk-app-engine-python google-cloud-sdk-app-engine-java google-cloud-sdk-cloud-run-proxy google-cloud-sdk-enterprise-certificate-proxy google-cloud-sdk-nomos google-cloud-sdk-firestore-emulator google-cloud-sdk-bigtable-emulator google-cloud-sdk-skaffold
+        echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+        curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+        sudo apt update
+        sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin kubectl
+        export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
 
 
 
