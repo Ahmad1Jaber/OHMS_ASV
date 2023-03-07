@@ -93,6 +93,7 @@ def get_rooms(manager_id):
     """
     Endpoint to get all rooms for a given hotel manager
     """
+    cursor = None  # define the variable to avoid UnboundLocalError
     try:
         cursor = cnx.cursor(dictionary=True)
         select_query = "SELECT * FROM rooms WHERE manager_id = %s"
@@ -106,7 +107,8 @@ def get_rooms(manager_id):
         }
         return jsonify(response), 500
     finally:
-        cursor.close()
+        if cursor:
+            cursor.close()
 
     return jsonify({'rooms': rooms})
 
