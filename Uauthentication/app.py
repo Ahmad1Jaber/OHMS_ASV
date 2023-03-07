@@ -16,7 +16,7 @@ config = {
 # Connect to the database
 cnx = mysql.connector.connect(**config)
 
-@app.route('/register', methods=['POST'])
+@app.route('/user/register', methods=['POST'])
 def register():
     # Get the user's details from the request
     name = request.json.get('name')
@@ -45,7 +45,7 @@ def register():
 
     return jsonify({'message': 'User registered successfully'}), 201
 
-@app.route('/login', methods=['POST'])
+@app.route('/user/login', methods=['POST'])
 def login():
     # Get the user's details from the request
     email = request.json.get('email')
