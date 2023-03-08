@@ -1,20 +1,25 @@
+import os
 from flask import Flask, jsonify, request
 import mysql.connector
-from flask_bcrypt import Bcrypt
+import bcrypt
+from configparser import ConfigParser
 
 app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
 # Read the credentials from the config file
-config = {
-    'user': 'username',
-    'password': 'password',
-    'host': 'hostname',
-    'database': 'database'
-}
+config = ConfigParser()
+config.read('config.ini')
+
+username = config.get('mysql', 'user')
+password = config.get('mysql', 'password')
+hostname = config.get('mysql', 'host')
+database = config.get('mysql', 'database')
 
 # Connect to the database
-cnx = mysql.connector.connect(**config)
+cnx = mysql.connector.connect(user=username,
+                              password=password,
+                              host=hostname,
+                              database=database)
 
 @app.route('/user/register', methods=['POST'])
 def register():
@@ -24,7 +29,7 @@ def register():
     password = request.json.get('password')
 
     # Hash the password
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     # Create a cursor object
     cursor = cnx.cursor()
@@ -64,7 +69,7 @@ def login():
         return jsonify({'message': 'Invalid credentials'}), 401
 
     # Check if the password is correct
-    if not bcrypt.check_password_hash(user[3], password):
+    if not bcrypt.checkpw(password.encode('utf-8'), user[3].encode('utf-8')):
         # Incorrect password
         cursor.close()
         return jsonify({'message': 'Invalid credentials'}), 401
