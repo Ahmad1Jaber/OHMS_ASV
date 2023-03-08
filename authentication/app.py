@@ -7,6 +7,8 @@ global cnx
 app = Flask(__name__)
 from configparser import ConfigParser
 from flask_cors import CORS
+from flask_cors import cross_origin
+
 
 # enable CORS
 CORS(app)
@@ -107,3 +109,11 @@ def login():
             'message': 'Invalid email or password.'
         }
         return jsonify(response), 401
+    
+@app.route('/healthz')
+@cross_origin(origin='*', headers=['Content-Type'])
+def health_check():
+    return 'OK', 200
+    
+if __name__ == "__main__":
+    app.run()
