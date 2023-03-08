@@ -6,6 +6,10 @@ import bcrypt
 global cnx
 app = Flask(__name__)
 from configparser import ConfigParser
+from flask_cors import CORS
+
+# enable CORS
+CORS(app)
 
 # Read the credentials from the config file
 config = ConfigParser()
@@ -101,10 +105,3 @@ def login():
             'message': 'Invalid email or password.'
         }
         return jsonify(response), 401
-
-@app.route('/healthz')
-def health_check():
-    return 'OK', 200
-    
-if __name__ == "__main__":
-    app.run()
