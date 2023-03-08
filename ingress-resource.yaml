@@ -38,3 +38,10 @@ spec:
             name: user-authentication
             port:
               number: 80
+      - pathType: Prefix
+        path: "/occupancy"
+        backend:
+          service:
+            name: user-authentication
+            port:
+              number: 80
