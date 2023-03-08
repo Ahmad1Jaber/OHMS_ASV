@@ -48,6 +48,10 @@ def get_occupancy_report(hotel_id):
 
     return jsonify({'occupancy_report': report})
 
+@app.route('/healthz')
+def health_check():
+    return 'OK', 200
+
 # Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
