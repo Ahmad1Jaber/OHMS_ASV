@@ -29,7 +29,7 @@ cnx = mysql.connector.connect(user=username,
                               database=database)
 
 @app.route('/register',methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin()
 def register():
     # Get the request data
     data = request.json
@@ -69,7 +69,7 @@ def register():
 
 
 @app.route('/login', methods=['POST'])
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin()
 def login():
     # Get the request data
     data = request.json
