@@ -58,3 +58,9 @@ if response.status_code == 200:
 else:
     print(f'Request failed with status code {response.status_code}')
 """""
+url = 'http://api.birdbook.live/healthz'
+# Make the HTTP request
+response = requests.post(url, json=data)
+
+# Print the response
+print(response.json())
