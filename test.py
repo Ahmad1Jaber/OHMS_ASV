@@ -1,7 +1,7 @@
 import json
 import requests
 # Define the URL of the API endpoint
-url = 'http://api.birdbook.live/login'
+url = 'http://127.0.0.1:5000/login'
 
 # Define the data to be inserted as a dictionary
 data = {
