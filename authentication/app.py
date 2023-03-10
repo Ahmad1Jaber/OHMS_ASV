@@ -122,7 +122,7 @@ def login():
 def health_check():
     try:
         cursor = cnx.cursor()
-        cursor.execute("SELECT * from hotel_managers")
+        cursor.execute("SELECT 1")
         cursor.fetchone()
         return 'OK', 200
     except mysql.connector.Error as err:
