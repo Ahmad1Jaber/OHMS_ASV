@@ -1,13 +1,13 @@
 import json
 import requests
 # Define the URL of the API endpoint
-url = 'http://api.birdbook.live/register'
+url = 'http://api.birdbook.live/login'
 
 # Define the data to be inserted as a dictionary
 data = {
-    'hotel_name': 'Marriot',
-    'email': 'manager@marriot.com',
-    'password': 'p@ssword'
+
+    "email": "manager@marriot.com",
+    "password": "p@ssword"
 }
 
 # Convert the data to JSON format
