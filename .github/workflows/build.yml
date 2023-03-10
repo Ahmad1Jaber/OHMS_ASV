@@ -48,9 +48,10 @@ jobs:
 
     - name: Build and push Docker users_auth image
       run: |
-         helm upgrade authentication-chart ./authentication/authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-         helm upgrade manage-chart ./manage/manage-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-         helm upgrade occupancy-chart ./occupancy/occupancy-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-         helm upgrade uauth-chart ./Uauthentication/uauth-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+        helm upgrade authentication-chart ./Helm_Chart/authentication-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+        helm upgrade manage-chart ./Helm_Chart/manage-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+        helm upgrade occupancy-chart ./Helm_Chart/occupancy-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+        helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+
          
 

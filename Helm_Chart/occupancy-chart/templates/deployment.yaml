@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hotel-occupancy
-        image: gcr.io/carbon-zone-377308/hotel_occupancy
+        image: gcr.io/carbon-zone-377308/hotel_occupancy:latest
         ports:
         - containerPort: 5000
         resources:

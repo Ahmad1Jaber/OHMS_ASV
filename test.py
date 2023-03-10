@@ -1,95 +1,24 @@
-"""
+import json
 import requests
-
+# Define the URL of the API endpoint
 url = 'http://api.birdbook.live/login'
 
-# Define the request data
+# Define the data to be inserted as a dictionary
 data = {
-    'email': 'managerAhmad@example.com',
-    'password': 'mypassword'
+    'hotel_name': 'Hilton',
+    'email': 'manager@hilton.com',
+    'password': 'p@ssword'
 }
 
-# Make the HTTP request
-response = requests.post(url, json=data)
+# Convert the data to JSON format
+json_data = json.dumps(data)
 
-# Print the response
-print(response.json())
+# Define the headers for the request
+headers = {'Content-Type': 'application/json'}
 
+# Send the HTTP POST request to the API
+response = requests.post(url, headers=headers, data=json_data)
 
-"""
-
-import asyncio
-import aiohttp
-
-url = 'http://api.birdbook.live/login'
-
-# Define the login data
-data = {
-    'email': 'managerAhmad@example.com',
-    'password': 'mypassword'
-}
-
-# Specify the number of times to make the request
-num_requests = 250
-
-async def make_request(session):
-    async with session.post(url, json=data) as response:
-        result = await response.json()
-        print(result)
-
-async def main():
-    async with aiohttp.ClientSession() as session:
-        tasks = []
-        for i in range(num_requests):
-            task = asyncio.create_task(make_request(session))
-            tasks.append(task)
-        await asyncio.gather(*tasks)
-
-if __name__ == '__main__':
-    asyncio.run(main())
-
-
-"""""
-# Define the API URL
-url = 'http://127.0.0.1:5000/register'
-
-# Define the request data
-data = {
-    'hotel_name': 'Hotel Mathew',
-    'email': 'manager.mathew@example.com',
-    'password': 'mypassword'
-}
-
-# Make the HTTP request
-response = requests.post(url, json=data)
-
-# Print the response
-print(response.json())
-
-
-url = 'http://api.birdbook.live/login'
-
-# Define the request data
-data = {
-    'email': 'managerAhmad@example.com',
-    'password': 'mypassword'
-}
-
-# Make the HTTP request
-response = requests.post(url, json=data)
-
-# Print the response
-print(response.json())
-"""""
-
-"""""
-url = 'http://api.birdbook.live/managers/3/rooms'
-response = requests.get(url)
-
-if response.status_code == 200:
-    data = response.json()
-    print(data)
-    # do something with the response data
-else:
-    print(f'Request failed with status code {response.status_code}')
-"""
+# Print the status code and any data returned by the API
+print('Status Code:', response.status_code)
+print('Response Data:', response.text)

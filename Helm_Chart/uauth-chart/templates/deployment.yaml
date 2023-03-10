@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hotel-management
+  name: user-authentication
   labels:
-    app: hotel-management
+    app: user-authentication
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hotel-management
+      app: user-authentication
   template:
     metadata:
       labels:
-        app: hotel-management
+        app: user-authentication
     spec:
       containers:
-      - name: hotel-management
-        image: gcr.io/carbon-zone-377308/hotel_manage
+      - name: user-authentication
+        image: gcr.io/carbon-zone-377308/users_authentication:latest
         ports:
         - containerPort: 5000
         resources:

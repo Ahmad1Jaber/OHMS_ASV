@@ -42,6 +42,6 @@ spec:
         path: "/occupancy"
         backend:
           service:
-            name: user-authentication
+            name: hotel-occupancy
             port:
               number: 80
