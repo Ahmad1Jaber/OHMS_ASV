@@ -45,3 +45,10 @@ spec:
             name: hotel-occupancy
             port:
               number: 80
+      - pathType: Prefix
+        path: "/healthz"
+        backend:
+          service:
+            name: hotel-authentication
+            port:
+              number: 80

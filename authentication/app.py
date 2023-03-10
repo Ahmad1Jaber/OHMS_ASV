@@ -111,9 +111,21 @@ def login():
         return jsonify(response), 401
     
 @app.route('/healthz')
-@cross_origin(origin='*', headers=['Content-Type'])
+@cross_origin()
 def health_check():
-    return 'OK', 200
+    try:
+        cursor = cnx.cursor()
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+        return 'OK', 200
+    except mysql.connector.Error as err:
+        # Handle database errors
+        response = {
+            'status': 'fail',
+            'message': f"Database error: {err}"
+        }
+        return jsonify(response), 500
+
     
 if __name__ == "__main__":
     app.run()
