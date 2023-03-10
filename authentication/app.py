@@ -46,16 +46,23 @@ def register():
     # Insert the user into the database
     try:
         cursor = cnx.cursor()
-        insert_query = "INSERT INTO  hotel_managers (hotel_name, email, password) VALUES (%s, %s, %s)"
+        insert_query = "INSERT INTO  hotel_managers (hotel_name, email, password) VALUES (%s,%s, %s)"
         insert_data = (hotel_name, email, hashed_password.decode('utf-8'))
         cursor.execute(insert_query, insert_data)
         cnx.commit()
     except mysql.connector.Error as err:
-        # Handle database errors
-        response = {
-            'status': 'fail',
-            'message': f"Database error: {err}"
-        }
+        # Handle duplicate key error
+        if err.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
+            response = {
+                'status': 'fail',
+                'message': 'User already exists.'
+            }
+        else:
+            # Handle other database errors
+            response = {
+                'status': 'fail',
+                'message': f"Database error: {err}"
+            }
         return jsonify(response), 500
 
     # Return a success response

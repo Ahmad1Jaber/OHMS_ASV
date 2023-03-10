@@ -5,8 +5,8 @@ url = 'http://api.birdbook.live/register'
 
 # Define the data to be inserted as a dictionary
 data = {
-    'hotel_name': 'Regency',
-    'email': 'manager@regency.com',
+    'hotel_name': 'Marriot',
+    'email': 'manager@marriot.com',
     'password': 'p@ssword'
 }
 
