@@ -91,7 +91,7 @@ def login():
         password = data.get('password')
 
         cursor = cnx.cursor()
-        query = "SELECT password FROM hotel_manager WHERE email_address = %s"
+        query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
         record = (email_address,)
         cursor.execute(query, record)
         result = cursor.fetchone()
@@ -101,14 +101,15 @@ def login():
             return jsonify({'message': 'Invalid email address or password'}), 401
 
         # Compare the hashed password to the user's input
-        hashed_password = result[0].encode('utf-8')
+        hashed_password = result[1].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
-            return jsonify({'message': 'Login successful'})
+            return jsonify({'message': 'Login successful', 'hotel_id': result[0]})
         else:
             return jsonify({'message': 'Invalid email address or password'}), 401
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
+
 
 @app.route('/healthz')
 def health_check():
