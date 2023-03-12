@@ -109,6 +109,10 @@ def login():
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
-    
+
+@app.route('/healthz')
+def health_check():
+    return 'OK', 200
+
 if __name__ == '__main__':
     app.run(debug=True)
