@@ -131,7 +131,7 @@ def login():
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
             token = generate_token(result[0])
           #  token_string=token.decode('UTF-8')
-            return jsonify({'message': 'Login successful', 'hotel_id': result[0], 'token':token })
+            return jsonify({'message': 'Login successful','token':token })
         else:
             return jsonify({'message': 'Invalid email address or password'}), 401
     except Exception as e:
