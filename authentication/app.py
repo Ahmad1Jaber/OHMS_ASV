@@ -32,6 +32,7 @@ except mysql.connector.Error as e:
     exit(1)
 
 @app.route('/register', methods=['POST'])
+@cross_origin()
 def register():
     try:
         data = request.get_json()
@@ -84,6 +85,7 @@ def register():
 
 
 @app.route('/login', methods=['POST'])
+@cross_origin()
 def login():
     try:
         data = request.get_json()
@@ -117,3 +119,47 @@ def health_check():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
+"""
+
+-----Sending back the session ID------
+from flask import Flask, request, jsonify, session
+import bcrypt
+
+app = Flask(__name__)
+app.secret_key = "mysecretkey" # Set a secret key for the session
+
+@app.route('/login', methods=['POST'])
+def login():
+    try:
+        data = request.get_json()
+        email_address = data.get('email_address')
+        password = data.get('password')
+
+        cursor = cnx.cursor()
+        query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
+        record = (email_address,)
+        cursor.execute(query, record)
+        result = cursor.fetchone()
+        cursor.close()
+
+        if result is None:
+            return jsonify({'message': 'Invalid email address or password'}), 401
+
+        # Compare the hashed password to the user's input
+        hashed_password = result[1].encode('utf-8')
+        if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+            session['hotel_id'] = result[0] # Set the session variable
+            return jsonify({'message': 'Login successful', 'hotel_id': result[0]}), 200, {'Set-Cookie': f'session={session.sid}; SameSite=Lax; HttpOnly; Secure'}
+        else:
+            return jsonify({'message': 'Invalid email address or password'}), 401
+    except Exception as e:
+        print(f"Error while logging in: {e}")
+        return jsonify({'message': 'An error occurred while logging in'}), 500
+
+"""

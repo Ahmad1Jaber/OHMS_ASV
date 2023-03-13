@@ -1,24 +1,26 @@
-import json
+import unittest
 import requests
-# Define the URL of the API endpoint
-url = 'http://api.birdbook.live/login'
 
-# Define the data to be inserted as a dictionary
-data = {
+class TestAddRoom(unittest.TestCase):
     
-    "email": "manager@ritzcarlton.com",
-    "password": "p@ssword"
-}
+    def test_add_room(self):
+        # Set up test data
+        hotel_id = '211c0e0f-623c-45e5-ab8f-1fae3f13d0db'
+        room_data = {
+            'hotel_id': '211c0e0f-623c-45e5-ab8f-1fae3f13d0db',
+            'room_id': '21123',
+            'room_type': 'single',
+            'price': 100,
+            'max_occupancy': 1,
+            'num_rooms': 10
+        }
 
-# Convert the data to JSON format
-json_data = json.dumps(data)
+        # Send POST request to API endpoint
+        response = requests.post(f'http://localhost:5000/hotel/{hotel_id}/rooms', json=room_data)
+        # Check that response is successful (status code 201)
+        self.assertEqual(response.status_code, 201)
+        # Check that response data matches input data
+        self.assertEqual(response.json()['data'], room_data)
 
-# Define the headers for the request
-headers = {'Content-Type': 'application/json'}
-
-# Send the HTTP POST request to the API
-response = requests.post(url, headers=headers, data=json_data)
-
-# Print the status code and any data returned by the API
-print('Status Code:', response.status_code)
-print('Response Data:', response.text)
+if __name__ == '__main__':
+    unittest.main()
