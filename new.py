@@ -1,7 +1,7 @@
 
 import requests
 
-url = "http://api.birdbook.live/login"
+url = "http://127.0.0.1:6000/login"
 
 data = {
     "manager_name": "Ahmad Jaber",
