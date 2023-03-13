@@ -5,6 +5,8 @@ from flask_cors import CORS
 from flask_cors import cross_origin
 from configparser import ConfigParser
 import mysql.connector
+import jwt
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -19,6 +21,7 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+app.config['SECRET_KEY'] = config.get('jwt', 'secret_key')
 
 try:
     # Connect to the database
@@ -30,6 +33,24 @@ try:
 except mysql.connector.Error as e:
     print(f"Error connecting to database: {e}")
     exit(1)
+
+
+def generate_token(hotel_id):
+    try:
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
+            'iat': datetime.utcnow(),
+            'sub': hotel_id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
+
+
 
 @app.route('/register', methods=['POST'])
 @cross_origin()
@@ -105,12 +126,14 @@ def login():
         # Compare the hashed password to the user's input
         hashed_password = result[1].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
-            return jsonify({'message': 'Login successful', 'hotel_id': result[0]})
+            token = generate_token(result[0])
+            return jsonify({'message': 'Login successful', 'hotel_id': result[0], 'token': token.decode('UTF-8')})
         else:
             return jsonify({'message': 'Invalid email address or password'}), 401
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
+
 
 
 @app.route('/healthz')
