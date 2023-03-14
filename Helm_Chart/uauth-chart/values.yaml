@@ -1,5 +1,5 @@
 image:
-  repository: gcr.io/carbon-zone-377308/users_authentication
+  repository: gcr.io/carbon-zone-377308/users_authentication:latest
   tag: latest
 service:
   name: user-authentication
