@@ -13,7 +13,7 @@ def generate_token(hotel_id):
         payload = {
             'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
             'iat': datetime.utcnow(),
-            'sub': hotel_id
+            'hotel_id': hotel_id
         }
         return jwt.encode(
             payload,
@@ -102,6 +102,7 @@ def register():
     except Exception as e:
         print(f"Error while registering: {e}")
         return jsonify({'message': 'An error occurred while registering the hotel manager'}), 500
+    
 @app.route('/login', methods=['POST'])
 @cross_origin()
 def login():
