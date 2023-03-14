@@ -3,6 +3,7 @@ import mysql.connector
 from flask_cors import CORS
 from flask_cors import cross_origin
 from configparser import ConfigParser
+import jwt
 
 app = Flask(__name__)
 # enable CORS
@@ -15,6 +16,7 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+jwt_secret = config.get('jwt', 'secret_key')
 
 # Connect to the database
 cnx = mysql.connector.connect(user=username,
