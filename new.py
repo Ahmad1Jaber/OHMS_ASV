@@ -1,73 +1,22 @@
-
 import requests
+import json
 
-url = "http://api.birdbook.live/login"
+# Replace the <YOUR_HOSTNAME> and <YOUR_TOKEN> placeholders with your actual values
+hostname = "api.birdbook.live"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzg4MTc0MTYsImlhdCI6MTY3ODgxMzgxNiwiaG90ZWxfaWQiOiIyMTFjMGUwZi02MjNjLTQ1ZTUtYWI4Zi0xZmFlM2YxM2QwZGIifQ.FHyRL1y9-7lRK-y2QxMJfOtWKxNKM-gjvmd0RXXs1ng"
 
-data = {
-    "manager_name": "Ahmad Jaber",
-    "email_address": "ahmad.jaber@Regency.com",
-    "password": "p@ssword",
-    "hotel_name": "Regency",
-    "address_location": "Amman",
-    "country_id" : "111",
-    "website": "https://www.Regency.com"
-}
+headers = {'Authorization': token}
 
-response = requests.post(url, json=data)
+url = f"http://{hostname}/manage/rooms/getall"
 
-print("Response status code:", response)
-print("Response body:", response.text)
+response = requests.get(url, headers=headers)
 
-import jwt
-response_data = response.json()
+# Expecting a 200 response code
+assert response.status_code == 200
 
-token = response_data['token']
+# Expecting a JSON response with rooms data
+response_json = response.json()
+assert 'rooms' in response_json
 
-try:
-    # Decode the token using the PyJWT library and the secret key
-    decoded = jwt.decode(token, 'atyponisthebest', algorithms=['HS256'])
-    print(decoded)
-except jwt.exceptions.InvalidTokenError:
-    print('Invalid token')
-
-
-"""
-
-from flask import Flask, request, jsonify
-import mysql.connector
-from mysql.connector import Error
-import uuid
-from configparser import ConfigParser
-import bcrypt
-
-
-
-config = ConfigParser()
-config.read('config.ini')
-
-username = config.get('mysql', 'user')
-password = config.get('mysql', 'password')
-hostname = config.get('mysql', 'host')
-database = config.get('mysql', 'database')
-
-def create_connection():
-    connection = None
-    try:
-        connection = mysql.connector.connect(
-            user=username,
-            password=password,
-            host=hostname,
-            database=database
-        )
-    except Error as e:
-        print(f"The error '{e}' occurred while connecting to MySQL")
-    return connection
-
-
-database_Con = create_connection()
-print(database_Con)
-print(str(uuid.uuid4()))
-print(username)
-print(database)
-print(hostname)
-"""
+# Print the rooms data
+print(json.dumps(response_json['rooms'], indent=4))

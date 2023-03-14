@@ -70,7 +70,7 @@ def add_room():
 @cross_origin()
 def get_rooms():
     # Extract hotel ID from JWT token
-    token = request.headers.get('token')
+    token = request.headers.get('Authorization')
     hotel_id = extract_hotel_id(token)
 
     # Check if hotel ID is valid
