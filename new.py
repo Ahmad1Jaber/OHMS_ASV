@@ -1,7 +1,7 @@
 
 import requests
 
-url = "http://127.0.0.1:6000/login"
+url = "http://api.birdbook.live/login"
 
 data = {
     "manager_name": "Ahmad Jaber",
@@ -17,6 +17,19 @@ response = requests.post(url, json=data)
 
 print("Response status code:", response)
 print("Response body:", response.text)
+
+import jwt
+response_data = response.json()
+
+token = response_data['token']
+
+try:
+    # Decode the token using the PyJWT library and the secret key
+    decoded = jwt.decode(token, 'atyponisthebest', algorithms=['HS256'])
+    print(decoded)
+except jwt.exceptions.InvalidTokenError:
+    print('Invalid token')
+
 
 """
 

@@ -52,3 +52,10 @@ spec:
             name: hotel-authentication
             port:
               number: 80
+      - pathType: Prefix
+        path: "/manage"
+        backend:
+          service:
+            name: hotel-management
+            port:
+              number: 80
