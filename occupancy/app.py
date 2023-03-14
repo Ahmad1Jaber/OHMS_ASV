@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
-from configparser import ConfigParser
 import mysql.connector
+from flask_cors import CORS
+from flask_cors import cross_origin
+from configparser import ConfigParser
 import jwt
+import uuid
 from datetime import date
 
 app = Flask(__name__)
@@ -67,6 +69,11 @@ def hotel_occupancy_report():
     report = [dict(zip(column_names, row)) for row in result]
 
     return jsonify(report), 200
+
+@app.route('/healthz')
+def health_check():
+    return 'OK', 200
+
 
 if __name__ == '__main__':
     app.run(debug=True)
