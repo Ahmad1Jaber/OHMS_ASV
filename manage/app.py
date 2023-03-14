@@ -34,7 +34,7 @@ def extract_hotel_id(token):
         return None
 
 
-@app.route('/manage/rooms', methods=['POST'])
+@app.route('/manage/rooms/create', methods=['POST'])
 @cross_origin()
 def add_room():
     # Get request body
@@ -69,7 +69,7 @@ def add_room():
     return jsonify({'message': 'Room added successfully.', 'data': data}), 201
 
 
-@app.route('/manage/rooms/getall', methods=['GET'])
+@app.route('/manage/rooms/read', methods=['GET'])
 @cross_origin()
 def get_rooms():
     # Extract hotel ID from JWT token
@@ -101,7 +101,7 @@ def get_rooms():
     return jsonify({'rooms': rooms})
 
 
-@app.route('/manage/rooms/<string:room_id>', methods=['PUT'])
+@app.route('/manage/rooms/update/<string:room_id>', methods=['PUT'])
 @cross_origin()
 def update_room(room_id):
     # Get request body
@@ -123,6 +123,30 @@ def update_room(room_id):
     cnx.commit()
 
     return jsonify({'message': 'Room updated successfully.', 'data': data}), 200
+
+
+@app.route('/manage/rooms/delete/<string:room_id>', methods=['DELETE'])
+@cross_origin()
+def delete_room(room_id):
+    # Extract hotel ID from JWT token
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    # Check if hotel ID is valid
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    cursor = cnx.cursor()
+    query = "DELETE FROM hotel_rooms WHERE room_id = %s AND hotel_id = %s"
+    values = (room_id, hotel_id)
+    cursor.execute(query, values)
+    cnx.commit()
+
+    if cursor.rowcount > 0:
+        return jsonify({'message': 'Room deleted successfully.'}), 200
+    else:
+        return jsonify({'error': 'Room not found.'}), 404
+
 
 
 @app.route('/manage/hotel', methods=['PUT'])
@@ -147,6 +171,7 @@ def update_hotel():
     cnx.commit()
 
     return jsonify({'message': 'Hotel updated successfully.', 'data': data}), 200
+
 
 @app.route('/healthz')
 @cross_origin()
