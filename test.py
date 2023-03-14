@@ -7,7 +7,7 @@ token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzg4MjMwMjcsImlhdCI6MT
 
 headers = {'Authorization': token}
 
-url = f"http://{hostname}/manage/rooms/getall"
+url = f"http://{hostname}/manage/rooms/read"
 
 response = requests.get(url, headers=headers)
 

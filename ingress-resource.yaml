@@ -39,13 +39,6 @@ spec:
             port:
               number: 80
       - pathType: Prefix
-        path: "/occupancy"
-        backend:
-          service:
-            name: hotel-occupancy
-            port:
-              number: 80
-      - pathType: Prefix
         path: "/healthz"
         backend:
           service:
@@ -57,5 +50,12 @@ spec:
         backend:
           service:
             name: hotel-management
+            port:
+              number: 80
+      - pathType: Prefix
+        path: "/reports"
+        backend:
+          service:
+            name: hotel-occupancy
             port:
               number: 80

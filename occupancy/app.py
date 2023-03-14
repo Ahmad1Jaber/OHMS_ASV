@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
-import mysql.connector
-from flask_cors import CORS
-from flask_cors import cross_origin
+from flask_cors import CORS, cross_origin
 from configparser import ConfigParser
+import mysql.connector
+import jwt
+from datetime import date
 
 app = Flask(__name__)
-# enable CORS
 CORS(app)
-# Read the credentials from the config file
+
 config = ConfigParser()
 config.read('config.ini')
 
@@ -15,61 +15,58 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+jwt_secret = config.get('jwt', 'secret_key')
 
-# Connect to the database
 cnx = mysql.connector.connect(user=username,
                               password=password,
                               host=hostname,
                               database=database)
 
-@app.route('/occupancy/available_rooms/<string:hotel_id>', methods=['GET'])
-@cross_origin()
-def available_rooms_report(hotel_id):
-    # Query the database to get the room types and the number of available rooms for each
-    query = "SELECT room_type, SUM(num_rooms) - COALESCE(SUM(CASE WHEN checkin_date <= CURDATE() AND checkout_date >= CURDATE() THEN 1 ELSE 0 END), 0) AS available_rooms FROM hotel_rooms LEFT JOIN reservations ON hotel_rooms.room_id = reservations.room_id AND reservations.checkout_date >= CURDATE() AND reservations.checkin_date <= CURDATE() WHERE hotel_rooms.hotel_id = %s GROUP BY room_type"
-    cursor = cnx.cursor()
-    cursor.execute(query, (hotel_id,))
-    results = cursor.fetchall()
+def extract_hotel_id(token):
+    try:
+        payload = jwt.decode(token, jwt_secret, algorithms=['HS256'])
+        return payload['hotel_id']
+    except jwt.InvalidTokenError:
+        return None
 
-    # Convert the results to a list of dictionaries and return as JSON
-    report = [{'room_type': row[0], 'available_rooms': row[1]} for row in results]
+@app.route('/reports/occupancy', methods=['GET'])
+@cross_origin()
+def hotel_occupancy_report():
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    today = date.today()
+
+    query = '''
+    SELECT hr.room_type,
+           SUM(hr.num_rooms) AS total_rooms,
+           COALESCE(SUM(r.reserved_rooms), 0) AS reserved_rooms,
+           COALESCE(SUM(r.reserved_rooms) / SUM(hr.num_rooms) * 100, 0) AS occupancy_percentage
+    FROM hotel_rooms hr
+    LEFT JOIN (
+        SELECT room_id,
+               COUNT(*) AS reserved_rooms
+        FROM reservations
+        WHERE hotel_id = %s
+          AND checkin_date <= %s
+          AND checkout_date >= %s
+        GROUP BY room_id
+    ) r ON hr.room_id = r.room_id
+    WHERE hr.hotel_id = %s
+    GROUP BY hr.room_type
+    '''
+    values = (hotel_id, today, today, hotel_id)
+    cursor = cnx.cursor()
+    cursor.execute(query, values)
+
+    result = cursor.fetchall()
+    column_names = [desc[0] for desc in cursor.description]
+    report = [dict(zip(column_names, row)) for row in result]
+
     return jsonify(report), 200
 
-@app.route('/occupancy/profits/<string:hotel_id>', methods=['GET'])
-@cross_origin()
-def profits_report(hotel_id):
-    # Query the database to get the room types and the profits for each
-    query = """
-        SELECT room_type, 
-               SUM(num_rooms) AS total_rooms, 
-               SUM(num_rooms * price) AS total_revenue,
-               SUM(num_rooms * price) - COALESCE(SUM(CASE WHEN checkin_date <= CURDATE() AND checkout_date >= CURDATE() THEN num_rooms * price ELSE 0 END), 0) AS total_profits
-        FROM hotel_rooms 
-        LEFT JOIN reservations ON hotel_rooms.room_id = reservations.room_id AND reservations.checkout_date >= CURDATE() AND reservations.checkin_date <= CURDATE() 
-        WHERE hotel_rooms.hotel_id = %s 
-        GROUP BY room_type
-    """
-    cursor = cnx.cursor()
-    cursor.execute(query, (hotel_id,))
-    results = cursor.fetchall()
-
-    # Convert the results to a list of dictionaries and return as JSON
-    report = [
-        {
-            'room_type': row[0], 
-            'total_rooms': row[1], 
-            'total_revenue': float(row[2]), 
-            'total_profits': float(row[3])
-        } 
-        for row in results
-    ]
-    return jsonify(report), 200
-
-@app.route('/healthz')
-@cross_origin()
-def health_check():
-    return 'OK', 200
-
-# Run the Flask app
 if __name__ == '__main__':
     app.run(debug=True)
