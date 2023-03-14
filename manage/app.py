@@ -66,6 +66,37 @@ def add_room():
 
     return jsonify({'message': 'Room added successfully.', 'data': data}), 201
 
+@app.route('/manage/rooms/getall', methods=['GET'])
+@cross_origin()
+def get_rooms():
+    # Extract hotel ID from JWT token
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    # Check if hotel ID is valid
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    # Get rooms for the specified hotel
+    query = "SELECT room_id, room_type, price, max_occupancy, num_rooms FROM hotel_rooms WHERE hotel_id = %s"
+    values = (hotel_id,)
+    cursor = cnx.cursor()
+    cursor.execute(query, values)
+    rows = cursor.fetchall()
+
+    # Convert the rows to a list of dictionaries
+    rooms = []
+    for row in rows:
+        rooms.append({
+            'room_id': row[0],
+            'room_type': row[1],
+            'price': row[2],
+            'max_occupancy': row[3],
+            'num_rooms': row[4]
+        })
+
+    return jsonify({'rooms': rooms})
+
 
 @app.route('/manage/rooms/<string:room_id>', methods=['PUT'])
 @cross_origin()
