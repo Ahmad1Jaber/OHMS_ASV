@@ -11,3 +11,4 @@ MarkupSafe==2.1.2
 mysql-connector==2.2.9
 six==1.16.0
 Werkzeug==2.2.3
+PyJWT==2.6.0
