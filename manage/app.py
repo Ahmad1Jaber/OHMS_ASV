@@ -4,9 +4,7 @@ from flask_cors import CORS
 from flask_cors import cross_origin
 from configparser import ConfigParser
 import jwt
-
-import mysql.connector
-import jwt
+import uuid
 
 app = Flask(__name__)
 # enable CORS
@@ -51,11 +49,15 @@ def add_room():
         return jsonify({'error': 'Invalid token.'}), 401
 
     # Check if all required fields are provided
-    if not all(field in data for field in ['room_id', 'room_type', 'price', 'max_occupancy', 'num_rooms']):
+    if not all(field in data for field in ['room_type', 'price', 'max_occupancy', 'num_rooms']):
         return jsonify({'error': 'Please provide all required fields.'}), 400
 
-    # Add hotel_id to data
+    # Generate a UUID for the hotel room id
+    room_id = str(uuid.uuid4())
+
+    # Add hotel_id and room_id to data
     data['hotel_id'] = hotel_id
+    data['room_id'] = room_id
 
     # Insert new room into hotel_rooms table
     query = "INSERT INTO hotel_rooms (room_id, hotel_id, room_type, price, max_occupancy, num_rooms) VALUES (%s, %s, %s, %s, %s, %s)"
@@ -65,6 +67,7 @@ def add_room():
     cnx.commit()
 
     return jsonify({'message': 'Room added successfully.', 'data': data}), 201
+
 
 @app.route('/manage/rooms/getall', methods=['GET'])
 @cross_origin()
