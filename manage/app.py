@@ -162,7 +162,6 @@ def update_hotel():
     data = request.get_json()
 
     # Extract hotel ID from
-    token
     token = request.headers.get('Authorization')
     hotel_id = extract_hotel_id(token)
     # Check if hotel ID is valid
