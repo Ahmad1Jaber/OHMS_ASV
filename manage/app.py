@@ -28,10 +28,16 @@ cnx = mysql.connector.connect(user=username,
 
 def extract_hotel_id(token):
     try:
-        decoded = jwt.decode(token, jwt_secret, algorithms=['HS256'])
+        token_parts = token.split(" ")
+        if len(token_parts) != 2:
+            return None
+        
+        actual_token = token_parts[1]
+        decoded = jwt.decode(actual_token, jwt_secret, algorithms=['HS256'])
         return decoded['hotel_id']
     except jwt.exceptions.InvalidTokenError:
         return None
+
 
 
 @app.route('/manage/rooms/create', methods=['POST'])

@@ -3,7 +3,7 @@ import json
 
 # Replace the <YOUR_HOSTNAME> and <YOUR_TOKEN> placeholders with your actual values
 hostname = "api.birdbook.live"
-token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzg4MjMwMjcsImlhdCI6MTY3ODgxOTQyNywiaG90ZWxfaWQiOiIyMTFjMGUwZi02MjNjLTQ1ZTUtYWI4Zi0xZmFlM2YxM2QwZGIifQ.IVqLuhvIJxkgJPUt8hRSZTHHribpzcgP77W-NdYLLlk"
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Nzg5MTAwMzgsImlhdCI6MTY3ODkwNjQzOCwiaG90ZWxfaWQiOiIyMTFjMGUwZi02MjNjLTQ1ZTUtYWI4Zi0xZmFlM2YxM2QwZGIifQ.t7nEKc0oAvQMg0pfgn7oGE52Kt4KRojiWtu50QFCDCI"
 
 headers = {'Authorization': token}
 
