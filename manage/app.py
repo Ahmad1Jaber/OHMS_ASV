@@ -170,8 +170,8 @@ def update_hotel():
         return jsonify({'error': 'Invalid token.'}), 401
 
     # Update hotel data in hotel_manager table
-    query = "UPDATE hotel_manager SET manager_name = %s, email_address = %s, password = %s, hotel_name = %s, address_location = %s, website = %s, country_id = %s WHERE hotel_id = %s"
-    values = (data['manager_name'], data['email_address'], data['password'], data['hotel_name'], data['address_location'], data['website'], data['country_id'], hotel_id)
+    query = "UPDATE hotel_manager SET manager_name = %s, email_address = %s, hotel_name = %s, address_location = %s, website = %s WHERE hotel_id = %s"
+    values = (data['manager_name'], data['email_address'], data['hotel_name'], data['address_location'], data['website'], hotel_id)
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
