@@ -52,7 +52,7 @@ def teardown_request(exception):
     """Close the database connection after each request"""
     request.db.close()
 
-@app.route('/register', methods=['POST'])
+@app.route('/users/register', methods=['POST'])
 @cross_origin()
 def register():
     try:
@@ -91,7 +91,7 @@ def register():
         print(f"Error while registering: {e}")
         return jsonify({'message': 'An error occurred while registering the user'}), 500
     
-@app.route('/login', methods=['POST'])
+@app.route('/users/login', methods=['POST'])
 @cross_origin()
 def login():
     try:
