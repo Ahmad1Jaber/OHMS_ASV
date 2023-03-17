@@ -10,11 +10,17 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Authenticate with gcloud
+        run: |
+          gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
+          gcloud auth configure-docker
+    
       - name: Configure kubectl
         run: |
           echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -24,7 +30,7 @@ jobs:
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
 
-      - name: Deploy to GKE
+     - name: Deploy to GKE
         run: |
           helm upgrade authentication-chart ./Helm_Chart/authentication-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade manage-chart ./Helm_Chart/manage-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
