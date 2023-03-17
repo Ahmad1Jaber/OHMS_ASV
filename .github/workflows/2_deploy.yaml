@@ -31,7 +31,7 @@ jobs:
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
 
-     - name: Deploy to GKE
+      - name: Deploy to GKE
         run: |
           helm upgrade authentication-chart ./Helm_Chart/authentication-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade manage-chart ./Helm_Chart/manage-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
