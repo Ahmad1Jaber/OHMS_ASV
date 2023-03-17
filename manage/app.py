@@ -154,6 +154,40 @@ def delete_room(room_id):
         return jsonify({'error': 'Room not found.'}), 404
 
 
+@app.route('/manage/hotel', methods=['GET'])
+@cross_origin()
+def get_hotel():
+    # Extract hotel ID from
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    # Check if hotel ID is valid
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    # Retrieve hotel data from the hotel_manager table
+    query = "SELECT manager_name, email_address, hotel_name, address_location, website FROM hotel_manager WHERE hotel_id = %s"
+    cursor = cnx.cursor()
+    cursor.execute(query, (hotel_id,))
+
+    # Fetch the result
+    result = cursor.fetchone()
+
+    # Check if the result is not empty
+    if result is None:
+        return jsonify({'error': 'Hotel not found.'}), 404
+
+    # Create a dictionary with the fetched data
+    data = {
+        'manager_name': result[0],
+        'email_address': result[1],
+        'hotel_name': result[2],
+        'address_location': result[3],
+        'website': result[4]
+    }
+
+    return jsonify({'message': 'Hotel retrieved successfully.', 'data': data}), 200
+
 
 @app.route('/manage/hotel', methods=['PUT'])
 @cross_origin()
