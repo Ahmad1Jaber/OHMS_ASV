@@ -92,38 +92,61 @@ def login():
         email_address = data.get('email_address')
         password = data.get('password')
 
-        # Query MySQL for the hotel manager login credentials using the provided email address
-        cursor = request.db.cursor()
-        query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
-        record = (email_address,)
-        cursor.execute(query, record)
-        result = cursor.fetchone()
-        cursor.close()
-
-        if result is None:
-            return jsonify({'message': 'Invalid email address or password'}), 401
-
-        # Compare the hashed password to the user's input
-        hashed_password = result[1].encode('utf-8')
-        if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
-            # Get the hotel manager details from Redis using
-                    # the hotel ID
-            hotel_id = result[0]
+        # Check Redis for the hotel manager details using the provided email address
+        hotel_id = r.get(email_address)
+        if hotel_id is not None:
+            # Get the hotel manager details from Redis using the hotel ID
             manager_details = r.hgetall(hotel_id)
 
-            # Generate a JWT token for the hotel manager
-            token = generate_token(hotel_id)
+            # Compare the hashed password to the user's input
+            hashed_password = manager_details.get('password').encode('utf-8')
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                # Generate a JWT token for the hotel manager
+                token = generate_token(hotel_id)
 
-            # Merge the hotel manager details from Redis with the login credentials from MySQL
-            manager_details.update({'email_address': email_address})
-            manager_details.update({'password': hashed_password})
+                # Merge the hotel manager details from Redis with the login credentials from MySQL
+                manager_details.update({'email_address': email_address})
+                manager_details.update({'password': hashed_password})
 
-            return jsonify({'message': 'Login successful', 'token': token, 'manager_details': manager_details})
+                return jsonify({'message': 'Login successful', 'token': token, 'manager_details': manager_details})
+            else:
+                return jsonify({'message': 'Invalid email address or password'}), 401
         else:
-            return jsonify({'message': 'Invalid email address or password'}), 401
+            # Query MySQL for the hotel manager login credentials using the provided email address
+            cursor = request.db.cursor()
+            query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
+            record = (email_address,)
+            cursor.execute(query, record)
+            result = cursor.fetchone()
+            cursor.close()
+
+            if result is None:
+                return jsonify({'message': 'Invalid email address or password'}), 401
+
+            # Compare the hashed password to the user's input
+            hashed_password = result[1].encode('utf-8')
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                # Store the hotel manager details in Redis using the provided email address as the key
+                hotel_id = result[0]
+                manager_details = r.hgetall(hotel_id)
+                r.set(email_address, hotel_id)
+                
+                # Generate a JWT token for the hotel manager
+                token = generate_token(hotel_id)
+
+                # Merge the hotel manager details from Redis with the login credentials from MySQL
+                manager_details.update({'email_address': email_address})
+                manager_details.update({'password': hashed_password})
+
+                return jsonify({'message': 'Login successful', 'token': token, 'manager_details': manager_details})
+            else:
+                return jsonify({'message': 'Invalid email address or password'}), 401
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
+
+
+
 @app.route('/healthz')
 def health_check():
     return 'OK', 200
