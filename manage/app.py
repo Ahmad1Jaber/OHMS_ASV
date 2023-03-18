@@ -5,6 +5,8 @@ from flask_cors import cross_origin
 from configparser import ConfigParser
 import jwt
 import uuid
+import redis
+import json
 
 app = Flask(__name__)
 # enable CORS
@@ -18,6 +20,9 @@ password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
 jwt_secret = config.get('jwt', 'secret_key')
+redis_host = config.get('redis', 'redishost')
+redis_port = config.get('redis', 'redisport')
+redis_client = redis.Redis(host=redis_host, port=redis_port)
 
 # Connect to the database
 cnx = mysql.connector.connect(user=username,
@@ -86,25 +91,35 @@ def get_rooms():
     if hotel_id is None:
         return jsonify({'error': 'Invalid token.'}), 401
 
-    # Get rooms for the specified hotel
-    query = "SELECT room_id, room_type, price, max_occupancy, num_rooms FROM hotel_rooms WHERE hotel_id = %s"
-    values = (hotel_id,)
-    cursor = cnx.cursor()
-    cursor.execute(query, values)
-    rows = cursor.fetchall()
+    # Check if the rooms data is already in Redis cache
+    rooms_data = redis_client.get(f'rooms_{hotel_id}')
+    if rooms_data:
+        # Convert the cached data from bytes to dictionary
+        rooms = json.loads(rooms_data.decode('utf-8'))
+    else:
+        # Get rooms for the specified hotel from the database
+        query = "SELECT room_id, room_type, price, max_occupancy, num_rooms FROM hotel_rooms WHERE hotel_id = %s"
+        values = (hotel_id,)
+        cursor = cnx.cursor()
+        cursor.execute(query, values)
+        rows = cursor.fetchall()
 
-    # Convert the rows to a list of dictionaries
-    rooms = []
-    for row in rows:
-        rooms.append({
-            'room_id': row[0],
-            'room_type': row[1],
-            'price': row[2],
-            'max_occupancy': row[3],
-            'num_rooms': row[4]
-        })
+        # Convert the rows to a list of dictionaries
+        rooms = []
+        for row in rows:
+            rooms.append({
+                'room_id': row[0],
+                'room_type': row[1],
+                'price': row[2],
+                'max_occupancy': row[3],
+                'num_rooms': row[4]
+            })
+
+        # Cache the rooms data in Redis
+        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms))
 
     return jsonify({'rooms': rooms})
+
 
 
 @app.route('/manage/rooms/update/<string:room_id>', methods=['PUT'])
@@ -157,7 +172,7 @@ def delete_room(room_id):
 @app.route('/manage/hotel', methods=['GET'])
 @cross_origin()
 def get_hotel():
-    # Extract hotel ID from
+    # Extract hotel ID from JWT token
     token = request.headers.get('Authorization')
     hotel_id = extract_hotel_id(token)
 
@@ -165,28 +180,38 @@ def get_hotel():
     if hotel_id is None:
         return jsonify({'error': 'Invalid token.'}), 401
 
-    # Retrieve hotel data from the hotel_manager table
-    query = "SELECT manager_name, email_address, hotel_name, address_location, website FROM hotel_manager WHERE hotel_id = %s"
-    cursor = cnx.cursor()
-    cursor.execute(query, (hotel_id,))
+    # Check if the hotel data is already in Redis cache
+    hotel_data = redis_client.get(f'hotel_{hotel_id}')
+    if hotel_data:
+        # Convert the cached data from bytes to dictionary
+        data = json.loads(hotel_data.decode('utf-8'))
+    else:
+        # Retrieve hotel data from the hotel_manager table
+        query = "SELECT manager_name, email_address, hotel_name, address_location, website FROM hotel_manager WHERE hotel_id = %s"
+        cursor = cnx.cursor()
+        cursor.execute(query, (hotel_id,))
 
-    # Fetch the result
-    result = cursor.fetchone()
+        # Fetch the result
+        result = cursor.fetchone()
 
-    # Check if the result is not empty
-    if result is None:
-        return jsonify({'error': 'Hotel not found.'}), 404
+        # Check if the result is not empty
+        if result is None:
+            return jsonify({'error': 'Hotel not found.'}), 404
 
-    # Create a dictionary with the fetched data
-    data = {
-        'manager_name': result[0],
-        'email_address': result[1],
-        'hotel_name': result[2],
-        'address_location': result[3],
-        'website': result[4]
-    }
+        # Create a dictionary with the fetched data
+        data = {
+            'manager_name': result[0],
+            'email_address': result[1],
+            'hotel_name': result[2],
+            'address_location': result[3],
+            'website': result[4]
+        }
+
+        # Cache the hotel data in Redis
+        redis_client.set(f'hotel_{hotel_id}', json.dumps(data))
 
     return jsonify({'message': 'Hotel retrieved successfully.', 'data': data}), 200
+
 
 
 @app.route('/manage/hotel', methods=['PUT'])
