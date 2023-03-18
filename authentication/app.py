@@ -8,6 +8,8 @@ import mysql.connector
 import jwt
 from datetime import datetime, timedelta
 import logging
+import redis
+import json
 
 def generate_token(hotel_id):
     try:
@@ -41,6 +43,9 @@ password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
 app.config['SECRET_KEY'] = config.get('jwt', 'secret_key')
+redis_host = config.get('redis', 'redishost')
+redis_port = config.get('redis', 'redisport')
+redis_client = redis.Redis(host=redis_host, port=redis_port)
 
 def get_db():
     """Helper function to get a new database connection"""
@@ -134,6 +139,35 @@ def login():
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
+
+@app.route('/countries', methods=['GET'])
+@cross_origin()
+def get_countries():
+    # Check if the countries data is already in Redis cache
+    countries_data = redis_client.get('countries')
+    if countries_data:
+        # Convert the cached data from bytes to a list of dictionaries
+        countries = json.loads(countries_data.decode('utf-8'))
+    else:
+        # Get countries from the countries table
+        cursor = request.db.cursor()  # This line has been updated
+        query = "SELECT id, name FROM countries"
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+
+        # Convert the rows to a list of dictionaries
+        countries = []
+        for row in rows:
+            countries.append({
+                'id': row[0],
+                'name': row[1]
+            })
+
+        # Cache the countries data in Redis
+        redis_client.set('countries', json.dumps(countries))
+
+    return jsonify({'countries': countries})
 
 @app.route('/healthz')
 def health_check():

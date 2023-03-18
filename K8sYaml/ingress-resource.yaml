@@ -18,6 +18,13 @@ spec:
             port:
               number: 80
       - pathType: Prefix
+        path: "/countries"
+        backend:
+          service:
+            name: hotel-authentication
+            port:
+              number: 80
+      - pathType: Prefix
         path: "/register"
         backend:
           service:
