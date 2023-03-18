@@ -23,12 +23,12 @@ password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
 
-redis = config.get('redis', 'redishost')
-
+redishost = config.get('redis', 'redishost')
+redisport = config.get('redis', 'redisport')
 app.config['SECRET_KEY'] = config.get('jwt', 'secret_key')
 
 # Connect to Redis
-r = redis.Redis(host=redis, port=6379, db=0)
+r = redis.Redis(host=redishost, port=6379, db=0)
 
 def get_db():
     """Helper function to get a new database connection"""
