@@ -5,23 +5,9 @@ from flask_cors import CORS
 from flask_cors import cross_origin
 from configparser import ConfigParser
 import mysql.connector
+import redis
 import jwt
 from datetime import datetime, timedelta
-
-def generate_token(hotel_id):
-    try:
-        payload = {
-            'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
-            'iat': datetime.utcnow(),
-            'hotel_id': hotel_id
-        }
-        return jwt.encode(
-            payload,
-            app.config.get('SECRET_KEY'),
-            algorithm='HS256'
-        )
-    except Exception as e:
-        return e
 
 app = Flask(__name__)
 
@@ -36,7 +22,13 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+
+redis = config.get('redis', 'redishost')
+
 app.config['SECRET_KEY'] = config.get('jwt', 'secret_key')
+
+# Connect to Redis
+r = redis.Redis(host=redis, port=6379, db=0)
 
 def get_db():
     """Helper function to get a new database connection"""
@@ -66,34 +58,23 @@ def register():
         country_id = data.get('country_id')
         hotel_id = str(uuid.uuid4())
 
+        # Store the hotel manager details in Redis
+        r.hmset(hotel_id, {
+            'manager_name': manager_name,
+            'email_address': email_address,
+            'hotel_name': hotel_name,
+            'address_location': address_location,
+            'website': website,
+            'country_id': country_id
+        })
+
         # Hash the password
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
+        # Store the hotel manager login credentials in MySQL
         cursor = request.db.cursor()
-
-        # Check if the email address already exists in the database
-        query = "SELECT COUNT(*) FROM hotel_manager WHERE email_address = %s"
-        record = (email_address,)
-        cursor.execute(query, record)
-        result = cursor.fetchone()
-        if result[0] > 0:
-            # Email address already exists in the database
-            cursor.close()
-            return jsonify({'message': 'Email address already exists'}), 409
-
-        # Check if the provided country_id exists in the countries table
-        query = "SELECT COUNT(*) FROM countries WHERE id = %s"
-        record = (country_id,)
-        cursor.execute(query, record)
-        result = cursor.fetchone()
-        if result[0] == 0:
-            # Country ID doesn't exist in the countries table
-            cursor.close()
-            return jsonify({'message': 'Invalid country ID'}), 400
-
-        # Insert the new hotel manager into the database
-        query = """INSERT INTO hotel_manager (hotel_id, manager_name, email_address, password, hotel_name, address_location, website, country_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
-        record = (hotel_id, manager_name, email_address, hashed_password, hotel_name, address_location, website, country_id)
+        query = """INSERT INTO hotel_manager (hotel_id, email_address, password) VALUES (%s, %s, %s)"""
+        record = (hotel_id, email_address, hashed_password)
         cursor.execute(query, record)
         request.db.commit()
         cursor.close()
@@ -110,6 +91,8 @@ def login():
         data = request.get_json()
         email_address = data.get('email_address')
         password = data.get('password')
+
+        # Query MySQL for the hotel manager login credentials using the provided email address
         cursor = request.db.cursor()
         query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
         record = (email_address,)
@@ -123,17 +106,41 @@ def login():
         # Compare the hashed password to the user's input
         hashed_password = result[1].encode('utf-8')
         if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
-            token = generate_token(result[0])
-            return jsonify({'message': 'Login successful','token':token })
+            # Get the hotel manager details from Redis using
+                    # the hotel ID
+            hotel_id = result[0]
+            manager_details = r.hgetall(hotel_id)
+
+            # Generate a JWT token for the hotel manager
+            token = generate_token(hotel_id)
+
+            # Merge the hotel manager details from Redis with the login credentials from MySQL
+            manager_details.update({'email_address': email_address})
+            manager_details.update({'password': hashed_password})
+
+            return jsonify({'message': 'Login successful', 'token': token, 'manager_details': manager_details})
         else:
             return jsonify({'message': 'Invalid email address or password'}), 401
     except Exception as e:
         print(f"Error while logging in: {e}")
         return jsonify({'message': 'An error occurred while logging in'}), 500
-
 @app.route('/healthz')
 def health_check():
     return 'OK', 200
 
+def generate_token(hotel_id):
+    try:
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
+            'iat': datetime.utcnow(),
+            'hotel_id': hotel_id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
 if __name__ == '__main__':
-    app.run(debug=True, port=6000) 
+    app.run(debug=True) 

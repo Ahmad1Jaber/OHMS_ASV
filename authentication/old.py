@@ -1,14 +1,29 @@
-import os
 from flask import Flask, request, jsonify
-import configparser
-import mysql.connector
 import bcrypt
-global cnx
-app = Flask(__name__)
-from configparser import ConfigParser
+import uuid
 from flask_cors import CORS
 from flask_cors import cross_origin
+from configparser import ConfigParser
+import mysql.connector
+import jwt
+from datetime import datetime, timedelta
 
+def generate_token(hotel_id):
+    try:
+        payload = {
+            'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
+            'iat': datetime.utcnow(),
+            'hotel_id': hotel_id
+        }
+        return jwt.encode(
+            payload,
+            app.config.get('SECRET_KEY'),
+            algorithm='HS256'
+        )
+    except Exception as e:
+        return e
+
+app = Flask(__name__)
 
 # enable CORS
 CORS(app)
@@ -21,118 +36,104 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+app.config['SECRET_KEY'] = config.get('jwt', 'secret_key')
 
-# Connect to the database
-cnx = mysql.connector.connect(user=username,
-                              password=password,
-                              host=hostname,
-                              database=database)
+def get_db():
+    """Helper function to get a new database connection"""
+    return mysql.connector.connect(user=username, password=password, host=hostname, database=database)
 
-@app.route('/register',methods=['POST'])
+@app.before_request
+def before_request():
+    """Establish a new database connection before each request"""
+    request.db = get_db()
+
+@app.teardown_request
+def teardown_request(exception):
+    """Close the database connection after each request"""
+    request.db.close()
+
+@app.route('/register', methods=['POST'])
 @cross_origin()
 def register():
-    # Get the request data
-    data = request.json
-
-    # Extract the user details from the request data
-    hotel_name = data.get('hotel_name')
-    email = data.get('email')
-    password = data.get('password')
-
-    # Hash and salt the password
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-
-    # Insert the user into the database
     try:
-        cursor = cnx.cursor()
-        insert_query = "INSERT INTO  hotel_managers (hotel_name, email, password) VALUES (%s,%s, %s)"
-        insert_data = (hotel_name, email, hashed_password.decode('utf-8'))
-        cursor.execute(insert_query, insert_data)
-        cnx.commit()
-    except mysql.connector.Error as err:
-        # Handle duplicate key error
-        if err.errno == mysql.connector.errorcode.ER_DUP_ENTRY:
-            response = {
-                'status': 'fail',
-                'message': 'User already exists.'
-            }
-        else:
-            # Handle other database errors
-            response = {
-                'status': 'fail',
-                'message': f"Database error: {err}"
-            }
-        return jsonify(response), 500
+        data = request.get_json()
+        manager_name = data.get('manager_name')
+        email_address = data.get('email_address')
+        password = data.get('password')
+        hotel_name = data.get('hotel_name')
+        address_location = data.get('address_location')
+        website = data.get('website')
+        country_id = data.get('country_id')
+        hotel_id = str(uuid.uuid4())
 
-    # Return a success response
-    response = {
-        'status': 'success',
-        'message': 'User registered successfully.'
-    }
-    return jsonify(response), 200
+        # Hash the password
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
+        cursor = request.db.cursor()
 
+        # Check if the email address already exists in the database
+        query = "SELECT COUNT(*) FROM hotel_manager WHERE email_address = %s"
+        record = (email_address,)
+        cursor.execute(query, record)
+        result = cursor.fetchone()
+        if result[0] > 0:
+            # Email address already exists in the database
+            cursor.close()
+            return jsonify({'message': 'Email address already exists'}), 409
 
+        # Check if the provided country_id exists in the countries table
+        query = "SELECT COUNT(*) FROM countries WHERE id = %s"
+        record = (country_id,)
+        cursor.execute(query, record)
+        result = cursor.fetchone()
+        if result[0] == 0:
+            # Country ID doesn't exist in the countries table
+            cursor.close()
+            return jsonify({'message': 'Invalid country ID'}), 400
 
+        # Insert the new hotel manager into the database
+        query = """INSERT INTO hotel_manager (hotel_id, manager_name, email_address, password, hotel_name, address_location, website, country_id) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+        record = (hotel_id, manager_name, email_address, hashed_password, hotel_name, address_location, website, country_id)
+        cursor.execute(query, record)
+        request.db.commit()
+        cursor.close()
+
+        return jsonify({'message': 'Hotel manager registered successfully'})
+    except Exception as e:
+        print(f"Error while registering: {e}")
+        return jsonify({'message': 'An error occurred while registering the hotel manager'}), 500
+    
 @app.route('/login', methods=['POST'])
 @cross_origin()
 def login():
-    # Get the request data
-    data = request.json
-
-    # Extract the user details from the request data
-    email = data.get('email')
-    password = data.get('password')
-
-    # Retrieve the user from the database
-    cursor = cnx.cursor()
-    select_query = "SELECT manager_id, password FROM hotel_managers WHERE email = %s"
-    select_data = (email,)
-    cursor.execute(select_query, select_data)
-    result = cursor.fetchone()
-
-    if result is None:
-        # User not found
-        response = {
-            'status': 'fail',
-            'message': 'Invalid email or password.'
-        }
-        return jsonify(response), 401
-
-    user_id, hashed_password = result
-    if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
-        # Passwords match, login successful
-        response = {
-            'status': 'success',
-            'message': 'User logged in successfully.',
-            'user_id': user_id
-        }
-        return jsonify(response), 200
-    else:
-        # Passwords don't match, login failed
-        response = {
-            'status': 'fail',
-            'message': 'Invalid email or password.'
-        }
-        return jsonify(response), 401
-    
-@app.route('/healthz')
-@cross_origin()
-def health_check():
     try:
-        cursor = cnx.cursor()
-        cursor.execute("SELECT 1")
-        cursor.fetchone()
-        return 'OK', 200
-    except mysql.connector.Error as err:
-        # Handle database errors
-        response = {
-            'status': 'fail',
-            'message': f"Database error: {err}"
-        }
-        return jsonify(response), 500
+        data = request.get_json()
+        email_address = data.get('email_address')
+        password = data.get('password')
+        cursor = request.db.cursor()
+        query = "SELECT hotel_id, password FROM hotel_manager WHERE email_address = %s"
+        record = (email_address,)
+        cursor.execute(query, record)
+        result = cursor.fetchone()
+        cursor.close()
 
-    
-if __name__ == "__main__":
-    app.run()
+        if result is None:
+            return jsonify({'message': 'Invalid email address or password'}), 401
+
+        # Compare the hashed password to the user's input
+        hashed_password = result[1].encode('utf-8')
+        if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+            token = generate_token(result[0])
+            return jsonify({'message': 'Login successful','token':token })
+        else:
+            return jsonify({'message': 'Invalid email address or password'}), 401
+    except Exception as e:
+        print(f"Error while logging in: {e}")
+        return jsonify({'message': 'An error occurred while logging in'}), 500
+
+@app.route('/healthz')
+def health_check():
+    return 'OK', 200
+
+if __name__ == '__main__':
+    app.run(debug=True, port=6000) 
