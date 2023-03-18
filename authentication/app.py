@@ -99,7 +99,11 @@ def login():
             manager_details = r.hgetall(hotel_id)
 
             # Compare the hashed password to the user's input
-            hashed_password = manager_details.get('password').encode('utf-8')
+            hashed_password = manager_details.get('password')
+            if hashed_password is None:
+                return jsonify({'message': 'Invalid email address or password'}), 401
+
+            hashed_password = hashed_password.encode('utf-8')
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 # Generate a JWT token for the hotel manager
                 token = generate_token(hotel_id)
@@ -124,7 +128,11 @@ def login():
                 return jsonify({'message': 'Invalid email address or password'}), 401
 
             # Compare the hashed password to the user's input
-            hashed_password = result[1].encode('utf-8')
+            hashed_password = result[1]
+            if hashed_password is None:
+                return jsonify({'message': 'Invalid email address or password'}), 401
+
+            hashed_password = hashed_password.encode('utf-8')
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
                 # Store the hotel manager details in Redis using the provided email address as the key
                 hotel_id = result[0]
