@@ -8,6 +8,7 @@ import json
 import uuid
 from datetime import date
 import redis
+from decimal import Decimal
 
 app = Flask(__name__)
 CORS(app)
@@ -73,6 +74,12 @@ def get_hotel_occupancy_report(hotel_id, today):
 
     return report
 
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
+
 @app.route('/reports/occupancy', methods=['GET'])
 @cross_origin()
 def hotel_occupancy_report():
@@ -91,9 +98,10 @@ def hotel_occupancy_report():
         report = json.loads(cached_report)
     else:
         report = get_hotel_occupancy_report(hotel_id, today)
-        redis_client.set(cache_key, json.dumps(report), ex=60*60)  # Cache for 1 hour
+        redis_client.set(cache_key, json.dumps(report, cls=DecimalEncoder), ex=60*60)  # Cache for 1 hour
 
     return jsonify(report), 200
+
 
 @app.route('/healthz')
 def health_check():
