@@ -8,6 +8,7 @@ import uuid
 import redis
 import json
 import decimal
+import logging
 
 app = Flask(__name__)
 # enable CORS
@@ -31,6 +32,8 @@ cnx = mysql.connector.connect(user=username,
                               host=hostname,
                               database=database)
 
+#Configure Logging
+logging.basicConfig(level=logging.DEBUG)
 
 def extract_hotel_id(token):
     try:
@@ -189,12 +192,13 @@ def get_hotel():
     if hotel_data:
         # Convert the cached data from bytes to dictionary
         data = json.loads(hotel_data.decode('utf-8'))
+        app.logger.info('Hello, I made it to the redis cache!')
     else:
         # Retrieve hotel data from the hotel_manager table
         query = "SELECT manager_name, email_address, hotel_name, address_location, website FROM hotel_manager WHERE hotel_id = %s"
         cursor = cnx.cursor()
         cursor.execute(query, (hotel_id,))
-
+        app.logger.info('Opps, I missed the redis, check your connection!')
         # Fetch the result
         result = cursor.fetchone()
 

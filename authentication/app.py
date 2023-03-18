@@ -7,6 +7,7 @@ from configparser import ConfigParser
 import mysql.connector
 import jwt
 from datetime import datetime, timedelta
+import logging
 
 def generate_token(hotel_id):
     try:
@@ -27,6 +28,9 @@ app = Flask(__name__)
 
 # enable CORS
 CORS(app)
+
+#Configure Logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Read the credentials from the config file
 config = ConfigParser()
