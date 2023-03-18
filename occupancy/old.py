@@ -1,16 +1,15 @@
-from configparser import ConfigParser
-import os
 from flask import Flask, request, jsonify
-import configparser
 import mysql.connector
-import bcrypt
-global cnx
-# Initialize Flask app
-app = Flask(__name__)
-from configparser import ConfigParser
 from flask_cors import CORS
 from flask_cors import cross_origin
-# Read the credentials from the config file
+from configparser import ConfigParser
+import jwt
+import uuid
+from datetime import date
+
+app = Flask(__name__)
+CORS(app)
+
 config = ConfigParser()
 config.read('config.ini')
 
@@ -18,64 +17,69 @@ username = config.get('mysql', 'user')
 password = config.get('mysql', 'password')
 hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
+jwt_secret = config.get('jwt', 'secret_key')
 
-# Connect to the database
 cnx = mysql.connector.connect(user=username,
                               password=password,
                               host=hostname,
                               database=database)
 
-# Endpoint to get occupancy report for a hotel
-@app.route('/occupancy', methods=['GET'])
+def extract_hotel_id(token):
+    try:
+        token_parts = token.split(" ")
+        if len(token_parts) != 2:
+            return None
+        
+        actual_token = token_parts[1]
+        decoded = jwt.decode(actual_token, jwt_secret, algorithms=['HS256'])
+        return decoded['hotel_id']
+    except jwt.exceptions.InvalidTokenError:
+        return None
+
+
+@app.route('/reports/occupancy', methods=['GET'])
 @cross_origin()
-def get_occupancy_report():
-    # Get the authenticated hotel manager's credentials from the request headers
-    email = request.headers.get('email')
-    password = request.headers.get('password')
+def hotel_occupancy_report():
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
 
-    # Verify the credentials and retrieve the manager_id
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    today = date.today()
+
+    query = '''
+    SELECT hr.room_type,
+           SUM(hr.num_rooms) AS total_rooms,
+           COALESCE(SUM(r.reserved_rooms), 0) AS reserved_rooms,
+           COALESCE(SUM(r.reserved_rooms) / SUM(hr.num_rooms) * 100, 0) AS occupancy_percentage
+    FROM hotel_rooms hr
+    LEFT JOIN (
+        SELECT room_id,
+               COUNT(*) AS reserved_rooms
+        FROM reservations
+        WHERE hotel_id = %s
+          AND checkin_date <= %s
+          AND checkout_date >= %s
+        GROUP BY room_id
+    ) r ON hr.room_id = r.room_id
+    WHERE hr.hotel_id = %s
+    GROUP BY hr.room_type
+    '''
+    values = (hotel_id, today, today, hotel_id)
     cursor = cnx.cursor()
-    cursor.execute("SELECT manager_id, password FROM hotel_managers WHERE email = %(email)s", {'email': email})
-    result = cursor.fetchone()
-    cursor.close()
+    cursor.execute(query, values)
 
-    if not result or not bcrypt.checkpw(password.encode('utf-8'), result[1].encode('utf-8')):
-        return jsonify({'error': 'Invalid credentials'}), 401
+    result = cursor.fetchall()
+    column_names = [desc[0] for desc in cursor.description]
+    report = [dict(zip(column_names, row)) for row in result]
 
-    manager_id = result[0]
-
-    # Retrieve the occupancy report for all rooms associated with the manager_id
-    cursor = cnx.cursor()
-    cursor.execute("""
-        SELECT room_type, COUNT(*) AS total_rooms, 
-            SUM(CASE WHEN reservations.check_in <= %(check_out)s AND reservations.check_out >= %(check_in)s THEN 1 ELSE 0 END) AS occupied_rooms
-        FROM rooms 
-        LEFT JOIN reservations ON rooms.room_id = reservations.room_id
-        WHERE rooms.manager_id = %(manager_id)s
-        GROUP BY room_type
-    """, {'check_in': request.args.get('check_in'), 'check_out': request.args.get('check_out'), 'manager_id': manager_id})
-
-    results = cursor.fetchall()
-    cursor.close()
-
-    report = []
-    for row in results:
-        occupancy = 0 if row['total_rooms'] == 0 else round(row['occupied_rooms'] / row['total_rooms'] * 100, 2)
-        report.append({
-            'room_type': row['room_type'],
-            'total_rooms': row['total_rooms'],
-            'occupied_rooms': row['occupied_rooms'],
-            'occupancy_percentage': occupancy
-        })
-
-    return jsonify({'occupancy_report': report})
-
+    return jsonify(report), 200
 
 @app.route('/healthz')
-@cross_origin()
 def health_check():
     return 'OK', 200
 
-# Run the Flask app
+
 if __name__ == '__main__':
     app.run(debug=True)

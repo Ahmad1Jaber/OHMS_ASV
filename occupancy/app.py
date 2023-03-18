@@ -6,6 +6,7 @@ from configparser import ConfigParser
 import jwt
 import uuid
 from datetime import date
+import redis
 
 app = Flask(__name__)
 CORS(app)
@@ -19,10 +20,16 @@ hostname = config.get('mysql', 'host')
 database = config.get('mysql', 'database')
 jwt_secret = config.get('jwt', 'secret_key')
 
+redis_host = config.get('redis', 'redishost')
+redis_port = config.get('redis', 'redisport')
+
+
 cnx = mysql.connector.connect(user=username,
                               password=password,
                               host=hostname,
                               database=database)
+
+redis_client = redis.Redis(host=redis_host, port=redis_port)
 
 def extract_hotel_id(token):
     try:
@@ -35,19 +42,8 @@ def extract_hotel_id(token):
         return decoded['hotel_id']
     except jwt.exceptions.InvalidTokenError:
         return None
-
-
-@app.route('/reports/occupancy', methods=['GET'])
-@cross_origin()
-def hotel_occupancy_report():
-    token = request.headers.get('Authorization')
-    hotel_id = extract_hotel_id(token)
-
-    if hotel_id is None:
-        return jsonify({'error': 'Invalid token.'}), 401
-
-    today = date.today()
-
+    
+def get_hotel_occupancy_report(hotel_id, today):
     query = '''
     SELECT hr.room_type,
            SUM(hr.num_rooms) AS total_rooms,
@@ -74,12 +70,33 @@ def hotel_occupancy_report():
     column_names = [desc[0] for desc in cursor.description]
     report = [dict(zip(column_names, row)) for row in result]
 
+    return report
+
+@app.route('/reports/occupancy', methods=['GET'])
+@cross_origin()
+def hotel_occupancy_report():
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    today = date.today()
+
+    cache_key = f"hotel_occupancy_report:{hotel_id}:{today}"
+    cached_report = redis_client.get(cache_key)
+
+    if cached_report:
+        report = json.loads(cached_report)
+    else:
+        report = get_hotel_occupancy_report(hotel_id, today)
+        redis_client.set(cache_key, json.dumps(report), ex=60*60)  # Cache for 1 hour
+
     return jsonify(report), 200
 
 @app.route('/healthz')
 def health_check():
     return 'OK', 200
-
 
 if __name__ == '__main__':
     app.run(debug=True)
