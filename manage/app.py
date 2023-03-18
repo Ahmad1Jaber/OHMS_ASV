@@ -7,6 +7,7 @@ import jwt
 import uuid
 import redis
 import json
+import decimal
 
 app = Flask(__name__)
 # enable CORS
@@ -43,7 +44,11 @@ def extract_hotel_id(token):
     except jwt.exceptions.InvalidTokenError:
         return None
 
-
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            return float(o)
+        return super(DecimalEncoder, self).default(o)
 
 @app.route('/manage/rooms/create', methods=['POST'])
 @cross_origin()
@@ -116,10 +121,9 @@ def get_rooms():
             })
 
         # Cache the rooms data in Redis
-        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms))
+        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder))
 
     return jsonify({'rooms': rooms})
-
 
 
 @app.route('/manage/rooms/update/<string:room_id>', methods=['PUT'])
@@ -208,10 +212,9 @@ def get_hotel():
         }
 
         # Cache the hotel data in Redis
-        redis_client.set(f'hotel_{hotel_id}', json.dumps(data))
+        redis_client.set(f'hotel_{hotel_id}', json.dumps(data, cls=DecimalEncoder))
 
     return jsonify({'message': 'Hotel retrieved successfully.', 'data': data}), 200
-
 
 
 @app.route('/manage/hotel', methods=['PUT'])
