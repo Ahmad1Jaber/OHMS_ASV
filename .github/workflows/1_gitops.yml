@@ -86,5 +86,6 @@ jobs:
           helm upgrade manage-chart ./Helm_Chart/manage-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade occupancy-chart ./Helm_Chart/occupancy-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+          helm upgrade reservation-chart ./Helm_Chart/reservation-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
 
 

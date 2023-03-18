@@ -59,3 +59,10 @@ spec:
             name: hotel-occupancy
             port:
               number: 80
+      - pathType: Prefix
+        path: "/reservations"
+        backend:
+          service:
+            name:  hotel-reservations
+            port:
+              number: 80

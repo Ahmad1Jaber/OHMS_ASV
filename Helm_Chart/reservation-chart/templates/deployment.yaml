@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hotel-reservations
+  labels:
+    app: hotel-reservations
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hotel-reservations
+  template:
+    metadata:
+      labels:
+        app: hotel-reservations
+    spec:
+      containers:
+      - name: hotel-reservations
+        image: gcr.io/carbon-zone-377308/hotel_authenticate:latest
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "0.05"
+            memory: "32Mi"
+          limits:
+            cpu: "0.2"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      imagePullSecrets:
+      - name: gcr-secret
