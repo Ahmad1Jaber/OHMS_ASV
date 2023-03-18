@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hotel-reservations
-        image: gcr.io/carbon-zone-377308/hotel_authenticate:latest
+        image: gcr.io/carbon-zone-377308/hotel_reservations:latest
         ports:
         - containerPort: 5000
         resources:
