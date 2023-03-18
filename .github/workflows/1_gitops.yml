@@ -41,6 +41,12 @@ jobs:
       run: |        
         docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest ./occupancy
         docker push gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest
+
+    - name: Build and push Docker reservations image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_reservation:latest ./hotelReservation
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_reservation:latest
+
     - name: Build and push Docker users_auth image
       run: |
         docker build -t gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest ./Uauthentication

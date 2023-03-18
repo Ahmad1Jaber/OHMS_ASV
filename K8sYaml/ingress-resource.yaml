@@ -32,13 +32,6 @@ spec:
             port:
               number: 80
       - pathType: Prefix
-        path: "/hotels"
-        backend:
-          service:
-            name: hotel-occupancy
-            port:
-              number: 80
-      - pathType: Prefix
         path: "/users"
         backend:
           service:
