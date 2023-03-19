@@ -114,6 +114,46 @@ def search_hotels():
 
     return jsonify({'hotels': hotels})
 
+@app.route('/search/rooms', methods=['GET'])
+@cross_origin()
+def get_hotel_rooms():
+    hotel_id = request.args.get('hotel_id')
+
+    if not hotel_id:
+        return jsonify({'error': 'Please provide a hotel_id to get the rooms.'}), 400
+
+    # Check if the room data is already in Redis cache
+    room_data = redis_client.get(f'rooms_{hotel_id}')
+    if room_data:
+        # Convert the cached data from bytes to a list of dictionaries
+        rooms = json.loads(room_data.decode('utf-8'))
+    else:
+        # Get rooms based on the hotel_id from the database
+        query = '''
+            SELECT room_id, room_type, price, max_occupancy, num_rooms
+            FROM hotel_rooms
+            WHERE hotel_id = %s
+        '''
+        cursor = cnx.cursor()
+        cursor.execute(query, (hotel_id,))
+        rows = cursor.fetchall()
+
+        # Convert the rows to a list of dictionaries
+        rooms = []
+        for row in rows:
+            rooms.append({
+                'room_id': row[0],
+                'room_type': row[1],
+                'price': float(row[2]),
+                'max_occupancy': row[3],
+                'num_rooms': row[4]
+            })
+
+        # Cache the room data in Redis
+        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder))
+
+    return jsonify({'rooms': rooms})
+
 @app.route('/healthz')
 @cross_origin()
 def health_check():
