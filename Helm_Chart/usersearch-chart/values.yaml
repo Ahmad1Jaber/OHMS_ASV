@@ -1,0 +1,12 @@
+image:
+  repository: gcr.io/carbon-zone-377308/users_search:latest
+  tag: latest
+service:
+  name: user-search
+  port: 5000
+  type: ClusterIP
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 90

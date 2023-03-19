@@ -52,6 +52,11 @@ jobs:
         docker build -t gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest ./Uauthentication
         docker push gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest
 
+    - name: Build and push Docker users_search image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/users_search:latest ./Usersearch
+        docker push gcr.io/${{ env.PROJECT_ID }}/users_search:latest
+
     - name: Set build status
       id: build_status
       run: echo "::set-output name=build_succeeded::true"
@@ -80,12 +85,13 @@ jobs:
           export USE_GKE_GCLOUD_AUTH_PLUGIN=True
           gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
 
-      - name: Deploy to GKE
+      - name: Deploy to GKE - Hotel Managers Namespace
         run: |
           helm upgrade authentication-chart ./Helm_Chart/authentication-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade manage-chart ./Helm_Chart/manage-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
           helm upgrade occupancy-chart ./Helm_Chart/occupancy-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-          helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
           helm upgrade reservation-chart ./Helm_Chart/reservation-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
-
-
+      - name: Deploy to GKE - Hotel Users Namespace
+        run: |          
+          helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
+          helm install usersearch-chart ./Helm_Chart/usersearch-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
