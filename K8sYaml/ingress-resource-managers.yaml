@@ -59,12 +59,3 @@ spec:
             name:  hotel-reservations
             port:
               number: 80
-
-      - pathType: Prefix
-        path: "/users/login"
-        backend:
-          service:
-            name: user-authentication
-            namespace: hotelusers
-            port:
-              number: 80

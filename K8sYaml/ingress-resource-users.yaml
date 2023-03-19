@@ -17,3 +17,10 @@ spec:
             name: user-authentication
             port:
               number: 80
+      - pathType: Prefix
+        path: "/search/hotels"
+        backend:
+          service:
+            name: user-search
+            port:
+              number: 80
