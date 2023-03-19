@@ -94,7 +94,7 @@ jobs:
       - name: Deploy to GKE - Hotel Users Namespace
         run: |          
           helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
-          helm install usersearch-chart ./Helm_Chart/usersearch-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
+          helm upgrade usersearch-chart ./Helm_Chart/usersearch-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
       - name: Deploy to GKE - Ingress Resource
         run: |          
           kubectl apply -f ./K8sYaml/ingress-resource-users.yaml --namespace hotelusers
