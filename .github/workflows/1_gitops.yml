@@ -100,7 +100,7 @@ jobs:
         run: |          
           helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
           helm upgrade usersearch-chart ./Helm_Chart/usersearch-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
-          helm upgrade userreserve-chart ./Helm_Chart/userreserve-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
+          helm install userreserve-chart ./Helm_Chart/userreserve-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
       - name: Deploy to GKE - Ingress Resource
         run: |          
           kubectl apply -f ./K8sYaml/ingress-resource-users.yaml --namespace hotelusers
