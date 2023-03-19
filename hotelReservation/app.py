@@ -65,10 +65,13 @@ def get_upcoming_reservations():
     if hotel_id is None:
         return jsonify({'error': 'Invalid token.'}), 401
 
-    query = """SELECT r.reservation_id, r.room_id, r.user_id, r.checkin_date, r.checkout_date, r.status
-               FROM reservations r
-               WHERE r.hotel_id = %s AND r.checkin_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY) AND r.status != 'canceled'
-               ORDER BY r.checkin_date"""
+    query = """SELECT r.reservation_id, u.username, hr.room_type, r.checkin_date, r.checkout_date, r.status
+                FROM reservations r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN hotel_rooms hr ON r.room_id = hr.room_id
+                WHERE r.hotel_id = %s AND r.checkin_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 2 DAY) AND r.status != 'canceled'
+                ORDER BY r.checkin_date
+                """
     cursor = cnx.cursor()
     cursor.execute(query, (hotel_id,))
     rows = cursor.fetchall()
@@ -77,13 +80,12 @@ def get_upcoming_reservations():
     for row in rows:
         reservations.append({
             'reservation_id': row[0],
-            'room_id': row[1],
-            'user_id': row[2],
+            'room_name': row[2],
+            'user_name': row[1],
             'checkin_date': row[3].strftime('%Y-%m-%d'),
             'checkout_date': row[4].strftime('%Y-%m-%d'),
             'status': row[5]
         })
-
     return jsonify({'reservations': reservations})
 
 @app.route('/reservations/past', methods=['GET'])
@@ -97,10 +99,13 @@ def get_past_reservations():
     if hotel_id is None:
         return jsonify({'error': 'Invalid token.'}), 401
 
-    query = """SELECT r.reservation_id, r.room_id, r.user_id, r.checkin_date, r.checkout_date, r.status
-               FROM reservations r
-               WHERE r.hotel_id = %s AND r.checkout_date < CURDATE()
-               ORDER BY r.checkout_date DESC"""
+    query = """SELECT r.reservation_id, u.username, hr.room_type, r.checkin_date, r.checkout_date, r.status
+                FROM reservations r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN hotel_rooms hr ON r.room_id = hr.room_id
+                WHERE r.hotel_id = %s AND r.checkout_date < CURDATE()
+                ORDER BY r.checkout_date DESC
+            """
     cursor = cnx.cursor()
     cursor.execute(query, (hotel_id,))
     rows = cursor.fetchall()
@@ -109,8 +114,8 @@ def get_past_reservations():
     for row in rows:
         reservations.append({
             'reservation_id': row[0],
-            'room_id': row[1],
-            'user_id': row[2],
+            'room_name': row[2],
+            'user_name': row[1],
             'checkin_date': row[3].strftime('%Y-%m-%d'),
             'checkout_date': row[4].strftime('%Y-%m-%d'),
             'status': row[5]
@@ -130,10 +135,13 @@ def get_all_reservations():
     if hotel_id is None:
         return jsonify({'error': 'Invalid token.'}), 401
 
-    query = """SELECT r.reservation_id, r.room_id, r.user_id, r.checkin_date, r.checkout_date, r.status
-               FROM reservations r
-               WHERE r.hotel_id = %s
-               ORDER BY r.checkout_date DESC"""
+    query = """SELECT r.reservation_id, u.username, hr.room_type, r.checkin_date, r.checkout_date, r.status
+                FROM reservations r
+                JOIN users u ON r.user_id = u.user_id
+                JOIN hotel_rooms hr ON r.room_id = hr.room_id
+                WHERE r.hotel_id = %s 
+                ORDER BY r.checkout_date DESC
+            """
     cursor = cnx.cursor()
     cursor.execute(query, (hotel_id,))
     rows = cursor.fetchall()
@@ -142,8 +150,8 @@ def get_all_reservations():
     for row in rows:
         reservations.append({
             'reservation_id': row[0],
-            'room_id': row[1],
-            'user_id': row[2],
+            'room_name': row[2],
+            'user_name': row[1],
             'checkin_date': row[3].strftime('%Y-%m-%d'),
             'checkout_date': row[4].strftime('%Y-%m-%d'),
             'status': row[5]

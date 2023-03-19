@@ -433,7 +433,7 @@
   432  kubectl apply -f gcr-secret.yaml --namespace hotelmanagers
   433  kubectl create secret docker-registry gcr-secret   --docker-server=https://gcr.io   --docker-username=_json_key   --docker-password="$(cat carbon-zone-377308-5fd1eaf197a3.json)"   --docker-email=ahmadjaber.cloud@gmail.com   --namespace=hotelmanagers
   434  history | grep exec
-  435  kubectl exec -it  hotel-authentication-74d78886df-gwqzs -n hotelmanagers -- /bin/bash
+  435  kubectl exec -it  hotel-occupancy-79d47bc98c-w8rbs -n hotelmanagers -- /bin/bash
   436  history | grep ingres
   437  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
   438  history | grep helm

@@ -3,7 +3,7 @@ import json
 
 # Replace these variables with the appropriate values
 api_base_url = 'http://localhost:5000'  # Replace with your Flask API app URL
-jwt_token = 'your_jwt_token'  # Replace with the JWT token for the user
+jwt_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyMzM0MzQsImlhdCI6MTY3OTIyOTgzNCwidXNlcl9pZCI6IjU3Njk4MWQ3LTZlNWQtNDg5OS04ZjRhLWRhYzhhM2Y3NzcwYiJ9.bVoCLMOXrDCjCefJgD5oD2bh7hj194pWVhS2G8Zuy4M'  # Replace with the JWT token for the user
 room_id = 'your_room_id'  # Replace with the room_id you want to reserve
 check_in_date = '2023-04-01'
 check_out_date = '2023-04-05'
