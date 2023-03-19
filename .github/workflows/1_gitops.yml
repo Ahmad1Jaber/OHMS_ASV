@@ -57,6 +57,11 @@ jobs:
         docker build -t gcr.io/${{ env.PROJECT_ID }}/users_search:latest ./Usersearch
         docker push gcr.io/${{ env.PROJECT_ID }}/users_search:latest
 
+    - name: Build and push Docker users_reserve image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/users_reserve:latest ./Userreserve
+        docker push gcr.io/${{ env.PROJECT_ID }}/users_reserve:latest
+
     - name: Set build status
       id: build_status
       run: echo "::set-output name=build_succeeded::true"
@@ -95,6 +100,7 @@ jobs:
         run: |          
           helm upgrade uauth-chart ./Helm_Chart/uauth-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
           helm upgrade usersearch-chart ./Helm_Chart/usersearch-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers
+          helm upgrade userreserve-chart ./Helm_Chart/userreserve-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelusers          
       - name: Deploy to GKE - Ingress Resource
         run: |          
           kubectl apply -f ./K8sYaml/ingress-resource-users.yaml --namespace hotelusers

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-reserve
+  labels:
+    app: user-reserve
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-reserve
+  template:
+    metadata:
+      labels:
+        app: user-reserve
+    spec:
+      containers:
+      - name: user-reserve
+        image: gcr.io/carbon-zone-377308/users_reserve:latest
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "0.05"
+            memory: "32Mi"
+          limits:
+            cpu: "0.2"
+            memory: "128Mi"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      imagePullSecrets:
+      - name: gcr-secret

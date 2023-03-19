@@ -24,3 +24,17 @@ spec:
             name: user-search
             port:
               number: 80
+      - pathType: Prefix
+        path: "/reserve"
+        backend:
+          service:
+            name: user-reserve
+            port:
+              number: 80    
+      - pathType: Prefix
+        path: "/reservations"
+        backend:
+          service:
+            name: user-reserve
+            port:
+              number: 80   
