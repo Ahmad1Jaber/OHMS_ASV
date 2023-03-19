@@ -32,13 +32,6 @@ spec:
             port:
               number: 80
       - pathType: Prefix
-        path: "/users"
-        backend:
-          service:
-            name: user-authentication
-            port:
-              number: 80
-      - pathType: Prefix
         path: "/healthz"
         backend:
           service:
@@ -64,5 +57,14 @@ spec:
         backend:
           service:
             name:  hotel-reservations
+            port:
+              number: 80
+
+      - pathType: Prefix
+        path: "/users/login"
+        backend:
+          service:
+            name: user-authentication
+            namespace: hotelusers
             port:
               number: 80

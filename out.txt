@@ -1,18 +1,456 @@
-async-timeout==4.0.2
-bcrypt==4.0.1
-click==8.1.3
-colorama==0.4.6
-Flask==2.2.3
-Flask-Bcrypt==1.0.1
-Flask-Cors==3.0.10
-Flask-MySQLdb==1.0.1
-gunicorn==20.1.0
-itsdangerous==2.1.2
-Jinja2==3.1.2
-MarkupSafe==2.1.2
-mysql-connector==2.2.9
-mysqlclient==2.1.1
-PyJWT==2.6.0
-redis==4.5.1
-six==1.16.0
-Werkzeug==2.2.3
+ history
+    1  iperf
+    2  sudo apt install iperf
+    3  iperf3
+    4  sudo apt update
+    5  sudo apt -y install iperf3
+    6  iperf3
+    7  iperf3 -c google.com
+    8  docker system info,
+    9  docker system info
+   10  docker images
+   11  docker ps
+   12  docker ps -a
+   13  docker serach hello-world
+   14  docker serach hello
+   15  docker search hello
+   16  df -h
+   17  blkid
+   18  python authentication/app.py
+   19  python3 authentication/app.py
+   20  pip install flask
+   21  sudo apt install python3-pip
+   22  pip install flask
+   23  python3 authentication/app.py
+   24  pip install mysql
+   25  python3 authentication/app.py
+   26  pip install mysql-connector
+   27  python3 authentication/app.py
+   28  pip install bcrypt
+   29  python3 authentication/app.py
+   30  python tst.py
+   31  pip install requests
+   32  python tst.py
+   33  python3 tst.py
+   34  python3 authentication/app.py
+   35  clear
+   36  python3 authentication/app.py
+   37  pip install mysql-connector-python
+   38  python3 authentication/app.py
+   39  python tst.py
+   40  python3 tst.py
+   41  clear
+   42  sudo apt-get install gunicorn
+   43  gunicorn --version
+   44  gunicorn --bind 0.0.0.0:5000 app:app
+   45  cd authentication/
+   46  gunicorn --bind 0.0.0.0:5000 app:app
+   47  python --v
+   48  python -v
+   49  python --version
+   50  python3 --version
+   51  cd ..
+   52  pip freeze > requirements.txt
+   53  docker build -t gcr.io/carbon-zone-377308/authentication
+   54  cd authentication/
+   55  docker build -t gcr.io/carbon-zone-377308/hotel_authentication:1.0.0.0
+   56  docker build -t gcr.io/carbon-zone-377308/hotel_authentication:1
+   57  docker build
+   58  docker build -t
+   59  docker build --help
+   60  docker build -t gcr.io/carbon-zone-377308/hotel_authentication:1
+   61  docker run -p 5000:5000 registry.gitlab.com/ahmadjaber.cloud/ohms/hotel_auth
+   62  gunicorn --bind 0.0.0.0:5000 app:app
+   63  gunicorn --bind 0.0.0.0 app:app
+   64  docker run -p 5000:5000 registry.gitlab.com/ahmadjaber.cloud/ohms/hotel_auth
+   65  docker images
+   66  docker run -p 5000:5000 registry.gitlab.com/ahmadjaber.cloud/ohms/hotel_auth:1.0.0.2
+   67  cd ..
+   68  git remote add gitlab https://gitlab.com/ahmadjaber.cloud/OHMS.git
+   69  sudo dmidecode -t 16
+   70  sudo apt-get install apt-transport-https ca-certificates gnupg
+   71  echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+   72  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+   73  sudo apt-get update && sudo apt-get install google-cloud-cli
+   74  gcloud init
+   75  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+   76  gcloud components install gke-gcloud-auth-plugin
+   77  sudo apt-get install google-cloud-sdk-gke-gcloud-auth-plugin
+   78  gke-gcloud-auth-plugin --version
+   79  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+   80  kubectl.exe get pods
+   81  kubectl get pods
+   82  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+   83  gcloud components install kubectl
+   84  sudo apt-get install kubectl
+   85  gcloud components install kubectl
+   86  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+   87  kubectl get pods
+   88  kubectl get pods -n hotelmanager
+   89  kubectl get namespaces
+   90  kubectl get pods --namespace hotelmanagers
+   91  kubectl get pods --namespace default
+   92  kubectl get nodes
+   93  kubectl get pods --namespace hotelmanagers
+   94  clear
+   95  kubectl get pods --namespace hotelmanagers
+   96  kubectl create secret docker-registry gcr-secret   --docker-server=https://gcr.io   --docker-username=_json_key   --docker-password="$(cat C:\Users\LENOVO IP GAMING\Desktop\OHMS_ASV\carbon-zone-377308-5fd1eaf197a3.json)"   --docker-email=ahmadjaber.cloud@gmail.com
+   97  cd C:\Users\LENOVO IP GAMING\Desktop\OHMS_ASV\carbon-zone-377308-5fd1eaf197a3.json
+   98  ls
+   99  cd OHMS/
+  100  ls
+  101  cd ..
+  102  cd /mnt/c/Users/
+  103  ls
+  104  cd LENOVO\ IP\ GAMING/
+  105  cd Desktop/
+  106  cd OHMS_ASV/
+  107  ls
+  108  kubectl create secret docker-registry gcr-secret   --docker-server=https://gcr.io   --docker-username=_json_key   --docker-password="$(cat carbon-zone-377308-5fd1eaf197a3.json)"   --docker-email=ahmadjaber.cloud@gmail.com
+  109  kubectl get secretes
+  110  kubectl get secrets
+  111  helm package authentication/authentication-chart/
+  112  helm
+  113  cd authentication/
+  114  helm.exe upgrade authentication-chart authentication-chart-0.1.0.tgz
+  115  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  116  helm.exe upgrade authentication-chart authentication-chart-0.1.0.tgz
+  117  gcloud container clusters get-credentials
+  118  kubectl get namespaces
+  119  helm upgrade authentication-chart authentication-chart-0.1.0.tgz
+  120  helm install authentication-chart authentication-chart-0.1.0.tgz
+  121  helm install authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret
+  122  kubectl get pods
+  123  helm install authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret
+  124  kubectl get pods
+  125* kubectl delete pod hotel-authentication-786fcd788c-hsdkc
+  126  kubectl get pods
+  127  helm install authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  128  kubectl get pods
+  129  kubectl get pods --namespace hotelmanagers
+  130  kubectl get services --namespaces
+  131  kubectl get services --namespaces hotelmanagers
+  132  kubectl get services --namespace hotelmanagers
+  133  helm install authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  134  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  135  kubectl get services --namespace hotelmanagers
+  136  cd ..
+  137  cd manage/
+  138  helm install manage-chart manage-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  139  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  140  cd ..
+  141  cd authentication/
+  142  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  143  kubectl get deployment nginx-ingress-ingress-nginx-controller
+  144  kubectl get service nginx-ingress-ingress-nginx-controller
+  145  cd ..
+  146  helm install nginx-ingress ingress-nginx/ingress-nginx
+  147  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  148  helm repo update
+  149  kubectl get deployment nginx-ingress-ingress-nginx-controller
+  150  kubectl get service nginx-ingress-ingress-nginx-controller
+  151  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  152  helm install nginx-ingress ingress-nginx/ingress-nginx
+  153  kubectl get deployment nginx-ingress-ingress-nginx-controller
+  154  kubectl get service nginx-ingress-ingress-nginx-controller
+  155  kubectl get services --namespace
+  156  kubectl get services
+  157  kubectl get services --namespace hotelmanagers
+  158  kubectl apply -f ingress-resource.yaml
+  159  ping ns-cloud-d1.googledomains.com
+  160  kubectl get services --namespace hotelmanagers
+  161  kubectl get services
+  162  kubectl apply -f ingress-resource.yamlkubectl get ingress ingress-resource
+  163  kubectl get ingress ingress-resource
+  164  kubectl get ingress ingress-resourcekubectl apply -f ingress-resource.yaml
+  165  kubectl apply -f ingress-resource.yaml
+  166  kubectl get ingress ingress-resource
+  167  ping api.birdbook.live
+  168  ping birdbook.live
+  169  ping http://birdbook.live
+  170  kubectl apply -f ingress-resource.yaml
+  171  kubectl get ingress ingress-resource
+  172  kubectl get services --namespace hotelmanagers
+  173  kubectl apply -f ingress-resource.yaml
+  174  kubectl get ingress ingress-resource
+  175  kubectl apply -f ingress-resource.yaml
+  176  kubectl get ingress ingress-resource
+  177  kubectl apply -f ingress-resource.yaml
+  178  kubectl get ingress ingress-resource
+  179  kubectl get services --namespace hotelmanagers
+  180  kubectl apply -f ingress-resource.yaml
+  181  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  182  kubectl apply -f ingress-resource.yaml
+  183  kubectl get ingress ingress-resource
+  184  kubectl apply -f ingress-resource.yaml
+  185  kubectl get sevices
+  186  kubectl get sevices --namespace default
+  187*
+  188  kubectl apply -f ingress-resource.yaml
+  189  cd authentication/
+  190  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  191  kubectl get services --namespace hotelmanagers
+  192  kubectl exec --stdin --tty hotel-authentication /bin/bash
+  193  kubectl exec --stdin --tty hotel-authentication /bin/bash --namespace hotelmanagers
+  194  kubectl exec --stdin --tty hotel-authentication /bin/bash --namespace hotelmanager
+  195  kubectl exec --stdin --tty hotel-authentication -- /bin/bash --namespace hotelmanager
+  196* kubectl exec --namespace hotelmanagers --stdin --tty hotel-authentication /bin/bash
+  197  kubectl get pods --namespace hotelmanagers
+  198  kubectl exec hotel-authentication -- /bin/bash --namespace hotelmanagers
+  199  kubectl exec hotel-authentication --/bin/bash --namespace hotelmanagers
+  200  kubectl exec hotel-authentication --namespace hotelmanagers
+  201  kubectl exec -it --namespace hotelmanagers hotel-authentication -- bash -c "ping 34.154.205.235"
+  202  kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv -- bash -c "ping 34.154.205.235"
+  203  kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv -- /bin/bash -c "ping 34.154.205.235"
+  204  kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv -- /bin/bash
+  205  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  206  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  207  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  208  kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv -- /bin/bash
+  209  cd ..
+  210  kubectl apply -f ingress-resource.yaml
+  211  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+  212  kubectl apply -f ingress-resource.yaml
+  213  kubectl get pods -n ingress-nginx
+  214  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+  215  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  216  helm repo update
+  217  helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
+  218  helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  219  helm repo update
+  220  helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx
+  221  $ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/cloud/deploy.yaml
+  222  kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.44.0/deploy/static/provider/cloud/deploy.yaml
+  223  kubectl get pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+  224  kubectl describe pods --all-namespaces -l app.kubernetes.io/name=ingress-nginx
+  225  kubectl apply -f ingress-resource.yaml
+  226  helm repo add nginx-stable https://helm.nginx.com/stable
+  227  helm repo update
+  228  helm install nginx-ingress nginx-stable/nginx-ingress --set rbac.create=true
+  229  helm uninstall nginx-ingress
+  230  helm install nginx-ingress nginx-stable/nginx-ingress --set rbac.create=true
+  231  kubectl apply -f ingress-resource.yaml
+  232  kubectl get ingress
+  233  kubectl apply -f ingress-resource.yaml
+  234  kubectl get ingress
+  235  kubectl apply -f ingress-resource.yaml
+  236  kubectl describe svc hotel-authentication --namespace hotelmanagers
+  237  kubectl get namespaces
+  238  kubectl get pods --namespace ingress-nginx
+  239  kubectl get pods
+  240  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  241  kubectl apply -f ingress-resource.yaml
+  242  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  243  kubectl apply -f ingress-resource.yaml
+  244  kubectl get services --namespace hotelmanagers
+  245  kubectl apply -f ingress-resource.yaml
+  246  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  247  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  248  kubectl apply -f ingress-resource.yaml
+  249  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  250  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  251  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  252  kubectl apply -f ingress-resource.yaml
+  253  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  254  kubectl apply -f ingress-resource.yaml
+  255  kubectl logs nginx-ingress-nginx-ingress-669c8f9d94-vd6ck
+  256  kubectl get pods
+  257  kubectl get pods --namespace hotelmanagers
+  258  kubectl describ hotel-authentication-565ffc84d8-9gglv --namespace hotelmanagers
+  259  kubectl describe hotel-authentication-565ffc84d8-9gglv --namespace hotelmanagers
+  260  kubectl describe pod/hotel-authentication-565ffc84d8-9gglv --namespace hotelmanagers
+  261  kubectl exec -it --namespace hotelmanagers hotel-authentication-565ffc84d8-9gglv -- /bin/bash
+  262  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  263  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  264  cd authentication/
+  265  helm upgrade authentication-chart authentication-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  266  kubectl exec -it nginx-ingress-nginx-ingress -- /bin/bash
+  267  kubectl get namespace
+  268  kubectl exec -it --namespace ingress-nginx nginx-ingress-nginx-ingress -- /bin/bash
+  269  kubectl get pods
+  270  kubectl exec -it nginx-ingress-nginx-ingress-669c8f9d94-vd6ck -- /bin/bash
+  271  history | grep helm
+  272  kubectl apply -f ../ubuntu.yaml --namespace hotelmanagers
+  273  kubectl exec --stdin --namespace hotelmanagers --tty ubuntu -- /bin/bash
+  274  kubectl get pods --namespace hotelmanagers
+  275  kubectl exec --stdin --namespace hotelmanagers --tty ubuntu-5447b8677d-rsxtf -- /bin/bash
+  276  kubectl apply -f ../ubuntu.yaml --namespace hotelmanagers
+  277  kubectl exec --stdin --namespace hotelmanagers --tty ubuntu-5447b8677d-rsxtf -- /bin/bash
+  278  kubectl apply -f ../ubuntu.yaml --namespace hotelmanagers
+  279  kubectl exec --stdin --namespace hotelmanagers --tty ubuntu-5447b8677d-rsxtf -- /bin/bash
+  280  kubectl get pods --namespace hotelmanagers
+  281  kubectl exec --stdin --namespace hotelmanagers --tty ubuntu-767dd4557f-tdmpv -- /bin/bash
+  282  kubectl get networkpolicies
+  283  kubectl describe pod ubuntu-767dd4557f-tdmpv  --namespace hotelmanagers
+  284  kubectl get hpa
+  285  history | grep helm
+  286  history 2000 | grep helm
+  287  cd ../Uauthentication/
+  288  helm install uauth-chart uauth-chart-0.1.0.tgz
+  289  cd ../occupancy/
+  290  helm install occupancy-chart occupancy-chart-0.1.0.tgz
+  291  cd ../Uauthentication/
+  292  cd ..
+  293  helm install occupancy-chart ./occupancy/occupancy-chart-0.1.0.tgz --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  294  helm install uauth-chart uauth-chart-0.1.0.tgz
+  295  history | grep ingress-resource.yaml
+  296  kubectl get services --namespace hotelmanagers
+  297  kubectl describe hotel-authentication --namespace hotelmanagers
+  298  kubectl describe service hotel-authentication --namespace hotelmanagers
+  299  history | grep exec
+  300  kubectl get pods -n hotelmanagers
+  301  kubectl exec --stdin --namespace hotelmanagers --tty hotel-authentication-744cd9487b-l2pls -- /bin/bash
+  302  kubectl exec --stdin --namespace hotelmanagers --tty hotel-authentication-744cd9487b-c6pkh -- /bin/bash
+  303  history | grep ingres
+  304  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  305  history | ingress
+  306  history | grep ingress
+  307  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  308  kubectl exec -it  hotel-authentication-74d78886df-4xqhm -n hotelmanagers -- bin/bash
+  309  kubectl exec -it  hotel-authentication-74d78886df-4xqhm -n hotelmanagers -- /bin/bash
+  310  kubectl exec -it   hotel-authentication-74d78886df-4xqhm -n hotelmanagers -- /bin/bash
+  311  kubechistory | grep -it
+  312  history | grep it
+  313  kubectl get deployments -n hotel-managers
+  314  kubectl get deployments -n hotelmanagers
+  315  history | grep ingress
+  316  clear
+  317  helm repo add kasten https://charts.kasten.io
+  318  kubectl create namespace kasten-k10
+  319  helm install k10 kasten/k10 --namspace kasten-k10
+  320  helm install k10 kasten/k10 --namespace kasten-k10
+  321  kubectl get all
+  322  kubectl get all --namespace kasten-k10
+  323  kubectl --namespace kasten-k10 port-forward service/gateway 8080:8000
+  324  kubectl get namespaces
+  325  kubectl delete namespace kasten-k10
+  326  kubectl get namespaces
+  327  clear
+  328  kubectl get namespaces
+  329  kubectl delete namespace kasten-k10
+  330  clear
+  331  kubectl delete namespace kasten-k10
+  332  clear
+  333  gsutil mb gs://velero-backups
+  334  gsutil mb gs://velero-backup-and-recovery
+  335  gcloud iam service-accounts create velero     --display-name "Velero service account"
+  336  PROJECT_ID=carbon-zone-377308
+  337  gcloud projects add-iam-policy-binding $PROJECT_ID     --member serviceAccount:velero@$PROJECT_ID.iam.gserviceaccount.com     --role roles/storage.admin
+  338  gcloud iam service-accounts keys create credentials-velero.json     --iam-account velero@$PROJECT_ID.iam.gserviceaccount.com
+  339  ls
+  340  ls -l credentials-velero.json
+  341  cd ..
+  342  tar -xvf "C:\Users\LENOVO IP GAMING\Downloads\velero-v1.10.2-linux-amd64.tar.gz"
+  343  tar -xvf "/mnt/c/Users/LENOVO IP GAMING//Downloads/velero-v1.10.2-linux-amd64.tar.gz"
+  344  ls
+  345  cd OHMS_ASV/
+  346  ls
+  347  velero install     --provider gcp     --plugins velero/velero-plugin-for-gcp:v1.3.0     --bucket gs://velero-backup-and-recovery     --secret-file ./credentials-velero.json     --use-volume-snapshots=false     --wait
+  348  cd velero-v1.10.2-linux-amd64/
+  349  velero install     --provider gcp     --plugins velero/velero-plugin-for-gcp:v1.3.0     --bucket gs://velero-backup-and-recovery     --secret-file ./credentials-velero.json     --use-volume-snapshots=false     --wait
+  350  cd ..
+  351  sudo mv velero-v1.10.2-linux-amd64/ /usr/local/bin/
+  352  velero version
+  353  ls /usr/local/bin/
+  354  mv /usr/local/bin/velero-v1.10.2-linux-amd64/velero /usr/local/bin/
+  355  sudo mv /usr/local/bin/velero-v1.10.2-linux-amd64/velero /usr/local/bin/
+  356  ls /usr/local/bin/
+  357  velero version
+  358  velero install     --provider gcp     --plugins velero/velero-plugin-for-gcp:v1.3.0     --bucket gs://velero-backup-and-recovery     --secret-file ./credentials-velero.json     --use-volume-snapshots=false     --wait
+  359  kubectl get all -n velero
+  360  kubectl get crds -o jsonpath='{.items[?(@.spec.group=="kio.kasten.io")].metadata.name}' --all-namespaces
+  361  kubectl get nodes
+  362  kubectl get crds | grep kio.kasten.io
+  363  kubectl get namespace
+  364  kubectl get all --namespace kasten-k10
+  365  cd ..
+  366  kubectl get namespace kasten-k10 -o json
+  367  ls
+  368  touch remove_finalizer.json
+  369  nano remove_finalizer.json
+  370  kubectl patch namespace kasten-k10 -p "$(cat remove_finalizer.json)" --type=merge
+  371  touch active.json
+  372  nano active.json
+  373  kubectl patch namespace kasten-k10 -p "$(cat active.json)" --type=merge
+  374  kubectl delete namespace kasten-k10 --force --grace-period=0
+  375  kubectl get namespaces
+  376  kubectl get crd | grep kio.kasten.io
+  377  kubectl delete crd bootstraps.dist.kio.kasten.io
+  378  kubectl delete crd clusters.dist.kio.kasten.io
+  379  kubectl delete crd distributions.dist.kio.kasten.io
+  380  kubectl delete crd k10clusterrolebindings.auth.kio.kasten.io
+  381  kubectl delete crd k10clusterroles.auth.kio.kasten.io
+  382  kubectl delete crd policies.config.kio.kasten.io
+  383  kubectl delete crd policypresets.config.kio.kasten.io
+  384  kubectl delete crd profiles.config.kio.kasten.io
+  385  kubectl delete crd reports.reporting.kio.kasten.io
+  386  kubectl delete crd transformsets.config.kio.kasten.io
+  387  kubectl get namespaces
+  388  kubectl delete namespace kasten-k10 --force --grace-period=0
+  389  kubectl get namespaces
+  390  kubectl cluster-info
+  391  kubectl cluster-info dump
+  392  kubectl get namespaces
+  393  kubectl get namespace kasten-k10 -o json
+  394  kubectl patch namespace kasten-k10 -p '{"metadata":{"finalizers":[]}}' --type=merge
+  395  kubectl delete namespace kasten-k10 --grace-period=0 --force
+  396  kubectl edit ns/kasten-k10
+  397  kubectl get ns/kasten-k10 -o json > my-namespace.json
+  398  cat my-namespace.json
+  399  kubectl edit ns/kasten-k10
+  400  kubectl get ns/kasten-k10 -o json > my-namespace.json
+  401  cat my-namespace.json
+  402  kubectl edit ns/kasten-k10
+  403  kubectl get ns/kasten-k10 -o json > my-namespace.json
+  404  cat my-namespace.json
+  405  kubectl delete namespace velero --grace-period=0 --force
+  406  kubectl get namespaces
+  407  clear
+  408  kubectl create namespace prometheus
+  409  cd OHMS_ASV/
+  410  ls
+  411  cd K8sYaml/
+  412  cd ..
+  413  cd Helm_Chart/
+  414  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+  415  helm repo update
+  416  helm install prometheus prometheus-community/prometheus --namespace prometheus
+  417  kubectl get all -n prometheus
+  418  kubectl get namespace
+  419  history conta
+  420  history | grep conta
+  421  gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
+  422  history | grep gcloud
+  423  history | grep g
+  424  history | grep ga
+  425  history | grep auth
+  426  history | grep delete
+  427  kubectl delete namespace prometheus --grace-period=0 --force
+  428  kubectl get namespace
+  429  history | grep ingres
+  430  cd ../K8sYaml/
+  431  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  432  kubectl apply -f gcr-secret.yaml --namespace hotelmanagers
+  433  kubectl create secret docker-registry gcr-secret   --docker-server=https://gcr.io   --docker-username=_json_key   --docker-password="$(cat carbon-zone-377308-5fd1eaf197a3.json)"   --docker-email=ahmadjaber.cloud@gmail.com   --namespace=hotelmanagers
+  434  history | grep exec
+  435  kubectl exec -it  hotel-authentication-74d78886df-gwqzs -n hotelmanagers -- /bin/bash
+  436  history | grep ingres
+  437  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  438  history | grep helm
+  439  history | grep install
+  440  helm install reservation-chart ./Helm_Chart/reservation-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  441  cd ..
+  442  cd Helm_Chart/
+  443  helm install reservation-chart ./Helm_Chart/reservation-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  444  cd ..
+  445  helm install reservation-chart ./Helm_Chart/reservation-chart --set imagePullSecrets[0].name=gcr-secret --namespace hotelmanagers
+  446  cd K8sYaml/
+  447  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  448  curl api.birdbook.live/reservations/past
+  449  kubectl apply -f ingress-resource.yaml --namespace hotelmanagers
+  450  curl api.birdbook.live/reservations/past
+  451  curl api.birdbook.live/reservations
+  452  curl api.birdbook.live/reservationsl
+  453  curl api.birdbook.live/reservations
+  454  kubectl exec -it  hotel-reservations-89fcf859c-4h845 -n hotelmanagers -- /bin/bash
+  455  history
