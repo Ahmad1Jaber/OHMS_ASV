@@ -118,6 +118,40 @@ def get_past_reservations():
 
     return jsonify({'reservations': reservations})
 
+
+@app.route('/reservations/all', methods=['GET'])
+@cross_origin()
+def get_all_reservations():
+    # Extract hotel ID from JWT token
+    token = request.headers.get('Authorization')
+    hotel_id = extract_hotel_id(token)
+
+    # Check if hotel ID is valid
+    if hotel_id is None:
+        return jsonify({'error': 'Invalid token.'}), 401
+
+    query = """SELECT r.reservation_id, r.room_id, r.user_id, r.checkin_date, r.checkout_date, r.status
+               FROM reservations r
+               WHERE r.hotel_id = %s
+               ORDER BY r.checkout_date DESC"""
+    cursor = cnx.cursor()
+    cursor.execute(query, (hotel_id,))
+    rows = cursor.fetchall()
+
+    reservations = []
+    for row in rows:
+        reservations.append({
+            'reservation_id': row[0],
+            'room_id': row[1],
+            'user_id': row[2],
+            'checkin_date': row[3].strftime('%Y-%m-%d'),
+            'checkout_date': row[4].strftime('%Y-%m-%d'),
+            'status': row[5]
+        })
+
+    return jsonify({'reservations': reservations})
+
+
 @app.route('/reservations/cancel/<string:reservation_id>', methods=['PUT'])
 @cross_origin()
 def cancel_reservation(reservation_id):

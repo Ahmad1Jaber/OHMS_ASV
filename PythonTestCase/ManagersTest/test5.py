@@ -1,7 +1,7 @@
 import requests
 
-url = 'http://localhost:5000/reports/occupancy'
-headers = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkxNzUwMDgsImlhdCI6MTY3OTE3MTQwOCwiaG90ZWxfaWQiOiIyMTFjMGUwZi02MjNjLTQ1ZTUtYWI4Zi0xZmFlM2YxM2QwZGIifQ.KmlFQzxbvlXe_4j1I903zbtBu9EooEl0ewcEdtnDi9g'}
+url = 'http://api.birdbook.live/reports/occupancy'
+headers = {'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NzkyNTY3MzEsImlhdCI6MTY3OTI1MzEzMSwiaG90ZWxfaWQiOiIyMTFjMGUwZi02MjNjLTQ1ZTUtYWI4Zi0xZmFlM2YxM2QwZGIifQ.KH3Ws53EVzaMzqklHX-8I0HJx3G09f9ddQmJ-6tay6A'}
 
 response = requests.get(url, headers=headers)
 
