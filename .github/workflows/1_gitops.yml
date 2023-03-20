@@ -31,8 +31,8 @@ jobs:
 
     - name: Build and push Docker authentication image
       run: |
-        gcloud builds submit --config ./K8sYaml/cloudbuild.yaml --project carbon-zone-377308
-
+        echo "Cloud Build Status: ${{ github.event.workflow_run.conclusion }}"
+        echo "Cloud Build ID: ${{ github.event.workflow_run.head_commit.id }}"
     - name: Set build status
       id: build_status
       run: echo "::set-output name=build_succeeded::true"
