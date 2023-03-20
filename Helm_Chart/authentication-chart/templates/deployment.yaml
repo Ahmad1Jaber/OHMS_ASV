@@ -17,6 +17,7 @@ spec:
       containers:
       - name: hotel-authentication
         image: gcr.io/carbon-zone-377308/hotel_authenticate:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:

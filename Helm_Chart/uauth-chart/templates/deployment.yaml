@@ -17,6 +17,7 @@ spec:
       containers:
       - name: user-authentication
         image: gcr.io/carbon-zone-377308/users_authentication:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:

@@ -17,6 +17,7 @@ spec:
       containers:
       - name: hotel-management
         image: gcr.io/carbon-zone-377308/hotel_manage:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:

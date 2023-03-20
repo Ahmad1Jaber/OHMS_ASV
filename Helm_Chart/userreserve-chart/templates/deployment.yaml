@@ -17,6 +17,7 @@ spec:
       containers:
       - name: user-reserve
         image: gcr.io/carbon-zone-377308/users_reserve:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:

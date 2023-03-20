@@ -17,6 +17,7 @@ spec:
       containers:
       - name: user-search
         image: gcr.io/carbon-zone-377308/users_search:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
         resources:
