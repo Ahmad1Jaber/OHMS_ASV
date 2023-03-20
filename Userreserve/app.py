@@ -36,24 +36,25 @@ def extract_user_info(token):
 
         actual_token = token_parts[1]
         decoded = jwt.decode(actual_token, jwt_secret, algorithms=['HS256'])
-        return decoded['user_id'], decoded['hotel_id']
+        return decoded['user_id']
     except jwt.exceptions.InvalidTokenError:
-        return None, None
+        return None
 
 @app.route('/reserve', methods=['POST'])
 def make_reservation():
     token = request.headers.get('Authorization')
-    user_id, hotel_id = extract_user_info(token)
+    user_id = extract_user_info(token)
 
-    if not hotel_id or not user_id:
-        return jsonify({'error': 'Invalid token or missing hotel_id/user_id'}), 401
+    if not user_id:
+        return jsonify({'error': 'Invalid token or missing user_id'}), 401
 
     data = request.json
+    hotel_id = data.get('hotel_id')
     room_id = data.get('room_id')
     check_in_date = data.get('check_in_date')
     check_out_date = data.get('check_out_date')
 
-    if not all([room_id, check_in_date, check_out_date]):
+    if not all([hotel_id, room_id, check_in_date, check_out_date]):
         return jsonify({'error': 'Missing required fields'}), 400
 
     try:
@@ -77,10 +78,15 @@ def make_reservation():
 @app.route('/reservations', methods=['GET'])
 def view_reservations():
     token = request.headers.get('Authorization')
-    user_id, hotel_id = extract_user_info(token)
+    user_id = extract_user_info(token)
 
-    if not hotel_id or not user_id:
-        return jsonify({'error': 'Invalid token or missing hotel_id/user_id'}), 401
+    if not user_id:
+        return jsonify({'error': 'Invalid token or missing user_id'}), 401
+
+    hotel_id = request.args.get('hotel_id')  # Get the hotel_id from query string
+
+    if not hotel_id:
+        return jsonify({'error': 'Missing hotel_id'}), 400
 
     cursor = cnx.cursor()
     query = '''
@@ -104,7 +110,7 @@ def view_reservations():
         })
 
     return jsonify({'reservations': reservations}), 200
-    
+
 @app.route('/healthz')
 @cross_origin()
 def health_check():
