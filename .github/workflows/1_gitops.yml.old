@@ -31,8 +31,37 @@ jobs:
 
     - name: Build and push Docker authentication image
       run: |
-        gcloud builds submit --config cloudbuild.yaml --project PROJECT_ID
-        
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest ./authentication
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_authenticate:latest
+    - name: Build and push Docker managers image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest ./manage
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_manage:latest
+    - name: Build and push Docker occupancy image
+      run: |        
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest ./occupancy
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_occupancy:latest
+
+    - name: Build and push Docker reservations image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/hotel_reservation:latest ./hotelReservation
+        docker push gcr.io/${{ env.PROJECT_ID }}/hotel_reservation:latest
+
+    - name: Build and push Docker users_auth image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest ./Uauthentication
+        docker push gcr.io/${{ env.PROJECT_ID }}/users_authentication:latest
+
+    - name: Build and push Docker users_search image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/users_search:latest ./Usersearch
+        docker push gcr.io/${{ env.PROJECT_ID }}/users_search:latest
+
+    - name: Build and push Docker users_reserve image
+      run: |
+        docker build -t gcr.io/${{ env.PROJECT_ID }}/users_reserve:latest ./Userreserve
+        docker push gcr.io/${{ env.PROJECT_ID }}/users_reserve:latest
+
     - name: Set build status
       id: build_status
       run: echo "::set-output name=build_succeeded::true"
