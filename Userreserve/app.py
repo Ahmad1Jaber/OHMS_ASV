@@ -72,7 +72,7 @@ def make_reservation():
     values = (reservation_id, hotel_id, room_id, user_id, check_in_date, check_out_date)
     cursor.execute(query, values)
     cnx.commit()
-
+    
     return jsonify({'message': 'Reservation successfully created', 'reservation_id': reservation_id}), 201
 
 @app.route('/reservations', methods=['GET'])

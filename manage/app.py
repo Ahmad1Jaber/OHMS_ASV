@@ -84,7 +84,7 @@ def add_room():
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-
+    redis_client.flushdb()
     return jsonify({'message': 'Room added successfully.', 'data': data}), 201
 
 
@@ -149,7 +149,7 @@ def update_room(room_id):
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-
+    redis_client.flushdb()
     return jsonify({'message': 'Room updated successfully.', 'data': data}), 200
 
 
@@ -240,7 +240,7 @@ def update_hotel():
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-
+    redis_client.flushdb()
     return jsonify({'message': 'Hotel updated successfully.', 'data': data}), 200
 
 
