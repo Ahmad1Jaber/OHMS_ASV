@@ -17,9 +17,9 @@ jobs:
 
     - name: Authenticate with gcloud
       run: |
-        echo "${CARBON_SECRET}" > carbon-zone-377308-5fd1eaf197a3.json
+        echo "${CARBON_SECRET}" > carbon.json
         ls
-        gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
+        gcloud auth activate-service-account --key-file=carbon.json
         gcloud auth configure-docker
   
     - name: Configure kubectl
