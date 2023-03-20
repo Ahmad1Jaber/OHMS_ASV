@@ -31,7 +31,7 @@ jobs:
 
     - name: Build and push Docker authentication image
       run: |
-        gcloud builds submit --config cloudbuild.yaml --project carbon-zone-377308
+        gcloud builds submit --config ./K8sYaml/cloudbuild.yaml --project carbon-zone-377308
 
     - name: Set build status
       id: build_status
