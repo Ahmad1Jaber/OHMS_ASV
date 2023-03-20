@@ -1,0 +1,23 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/hotel_authenticate:latest', './authentication']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/hotel_manage:latest', './manage']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/hotel_occupancy:latest', './occupancy']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/hotel_reservation:latest', './hotelReservation']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/users_authentication:latest', './Uauthentication']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/users_search:latest', './Usersearch']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/users_reserve:latest', './Userreserve']
+images:
+- 'gcr.io/$PROJECT_ID/hotel_authenticate:latest'
+- 'gcr.io/$PROJECT_ID/hotel_manage:latest'
+- 'gcr.io/$PROJECT_ID/hotel_occupancy:latest'
+- 'gcr.io/$PROJECT_ID/hotel_reservation:latest'
+- 'gcr.io/$PROJECT_ID/users_authentication:latest'
+- 'gcr.io/$PROJECT_ID/users_search:latest'
+- 'gcr.io/$PROJECT_ID/users_reserve:latest'
