@@ -29,9 +29,11 @@ jobs:
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
         gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
 
-    - name: Build and push Docker authentication image
-      run: |
-        gcloud builds submit --config ./K8sYaml/cloudbuild.yaml --project carbon-zone-377308
+    - name: Check Google Cloud Build status
+      uses: google-github-actions/cloud-build@main
+      with:
+        echo "Cloud Build Status: ${{ github.event.workflow_run.conclusion }}"
+        echo "Cloud Build ID: ${{ github.event.workflow_run.head_commit.id }}"
 
     - name: Set build status
       id: build_status
