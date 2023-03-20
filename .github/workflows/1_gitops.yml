@@ -6,7 +6,7 @@ on:
       - main
 env:
   PROJECT_ID: 	carbon-zone-377308
-  
+  CARBON_SECRET: ${{ secrets.CARBON }}
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,6 +17,8 @@ jobs:
 
     - name: Authenticate with gcloud
       run: |
+        echo "${CARBON_SECRET}" > carbon-zone-377308-5fd1eaf197a3.json
+        ls
         gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
         gcloud auth configure-docker
   
@@ -49,6 +51,7 @@ jobs:
 
       - name: Authenticate with gcloud
         run: |
+
           gcloud auth activate-service-account --key-file=carbon-zone-377308-5fd1eaf197a3.json
           gcloud auth configure-docker
     
