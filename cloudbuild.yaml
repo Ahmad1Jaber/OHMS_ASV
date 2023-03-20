@@ -21,3 +21,5 @@ images:
 - 'gcr.io/$PROJECT_ID/users_authentication:latest'
 - 'gcr.io/$PROJECT_ID/users_search:latest'
 - 'gcr.io/$PROJECT_ID/users_reserve:latest'
+options:
+logging: NONE
