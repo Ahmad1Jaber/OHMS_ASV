@@ -29,7 +29,7 @@ jobs:
         export USE_GKE_GCLOUD_AUTH_PLUGIN=True
         gcloud container clusters get-credentials gke-hmc --region europe-west8 --project carbon-zone-377308
 
-    - name: Build and push Docker authentication image
+    - name: Google Cloud Build
       run: |
         gcloud builds submit --config ./K8sYaml/cloudbuild.yaml --project carbon-zone-377308
 
