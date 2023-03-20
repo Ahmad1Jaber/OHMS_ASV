@@ -35,6 +35,7 @@ jobs:
         echo "Cloud Build Status: ${{ github.event.workflow_run.conclusion }}"
         echo "Cloud Build ID: ${{ github.event.workflow_run.head_commit.id }}"
         
+        
     - name: Set build status
       id: build_status
       run: echo "::set-output name=build_succeeded::true"
