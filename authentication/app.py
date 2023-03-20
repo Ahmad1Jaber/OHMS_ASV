@@ -165,7 +165,7 @@ def get_countries():
             })
 
         # Cache the countries data in Redis
-        redis_client.set('countries', json.dumps(countries))
+        redis_client.set('countries', json.dumps(countries), ex=3600)
 
     return jsonify({'countries': countries})
 

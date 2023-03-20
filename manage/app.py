@@ -84,7 +84,6 @@ def add_room():
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-    redis_client.flushdb()
     return jsonify({'message': 'Room added successfully.', 'data': data}), 201
 
 
@@ -124,7 +123,7 @@ def get_rooms():
             })
 
         # Cache the rooms data in Redis
-        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder))
+        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder, ex=3600))
 
     return jsonify({'rooms': rooms})
 
@@ -149,7 +148,6 @@ def update_room(room_id):
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-    redis_client.flushdb()
     return jsonify({'message': 'Room updated successfully.', 'data': data}), 200
 
 
@@ -216,7 +214,7 @@ def get_hotel():
         }
 
         # Cache the hotel data in Redis
-        redis_client.set(f'hotel_{hotel_id}', json.dumps(data, cls=DecimalEncoder))
+        redis_client.set(f'hotel_{hotel_id}', json.dumps(data, cls=DecimalEncoder, ex=3600))
 
     return jsonify({'message': 'Hotel retrieved successfully.', 'data': data}), 200
 
@@ -240,7 +238,6 @@ def update_hotel():
     cursor = cnx.cursor()
     cursor.execute(query, values)
     cnx.commit()
-    redis_client.flushdb()
     return jsonify({'message': 'Hotel updated successfully.', 'data': data}), 200
 
 

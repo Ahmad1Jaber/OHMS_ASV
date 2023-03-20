@@ -110,7 +110,7 @@ def search_hotels():
             })
 
         # Cache the search result in Redis
-        redis_client.set(f'search_{location}', json.dumps(hotels, cls=DecimalEncoder))
+        redis_client.set(f'search_{location}', json.dumps(hotels, cls=DecimalEncoder, ex=3600))
 
     return jsonify({'hotels': hotels})
 
@@ -150,7 +150,7 @@ def get_hotel_rooms():
             })
 
         # Cache the room data in Redis
-        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder))
+        redis_client.set(f'rooms_{hotel_id}', json.dumps(rooms, cls=DecimalEncoder, ex=3600))
 
     return jsonify({'rooms': rooms})
 
